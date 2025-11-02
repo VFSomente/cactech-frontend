@@ -1,0 +1,307 @@
+/* ===== Root variables (paleta CacTech: roxo + preto) ===== */
+:root {
+  --bg-dark: #0b0b0c;
+  --panel: #171718;
+  --accent: #8a2be2;
+  --accent-2: #b36cff;
+  --muted: #bdbdbd;
+  --glass: rgba(255, 255, 255, 0.03);
+  --preto: #0a0a0a;
+  --cinza-escuro: #1c1c1c;
+  --cinza: #2a2a2a;
+  --branco: #ffffff;
+  --roxo: #8a2be2;
+  --roxo-neon: #b36cff;
+}
+
+/* ===== CONTAINER GERAL ===== */
+.navbar {
+  width: 100%;
+  background: linear-gradient(to right, var(--preto), var(--cinza-escuro));
+  color: var(--branco);
+  display: flex;
+  flex-direction: column;
+  border-bottom: 3px solid var(--roxo);
+  box-shadow: 0 0 25px rgba(138, 43, 226, 0.25);
+  font-family: "Poppins", sans-serif;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* ===== LINHA SUPERIOR ===== */
+.navbar-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 50px;
+  height: 95px;
+}
+
+/* ===== LOGO ===== */
+.logo {
+  height: 130px;
+  filter: drop-shadow(0 0 6px var(--roxo));
+}
+
+/* ===== TEXTO DO LOGO ===== */
+.logo-text {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #05b83d;
+  margin-left: 10px;
+  letter-spacing: 1px;
+  font-family: 'Poppins', sans-serif;
+  text-transform: uppercase;
+  align-self: center;
+  transition: color 0.3s ease;
+  text-shadow: 0 0 10px rgba(179, 136, 255, 0.4);
+}
+
+.logo-text span {
+  color: #0a762c;
+  transition: color 0.3s ease;
+}
+
+.logo-text:hover span {
+  color: var(--roxo);
+}
+
+/* ===== PESQUISA ===== */
+.navbar-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 0 40px;
+}
+
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  background: var(--cinza);
+  border-radius: 10px;
+  width: 70%;
+  transition: 0.3s;
+  border: 1px solid transparent;
+  height: 48px;
+}
+
+.search-wrapper:hover {
+  border-color: var(--roxo-neon);
+  box-shadow: 0 0 14px rgba(179, 108, 255, 0.3);
+}
+
+.search-bar {
+  flex: 1;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  color: var(--branco);
+  outline: none;
+  font-size: 16px;
+}
+
+.search-btn {
+  background: var(--roxo);
+  border: none;
+  color: var(--branco);
+  padding: 12px 20px;
+  border-radius: 0 10px 10px 0;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 18px;
+}
+
+.search-btn:hover {
+  background: var(--roxo-neon);
+  box-shadow: 0 0 15px var(--roxo);
+}
+
+/* ===== ICONES / CONTA ===== */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.navbar-right a {
+  color: var(--branco);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 8px;
+  position: relative;
+  transition: color 0.3s ease, transform 0.2s ease;
+  font-size: 15px;
+}
+
+.navbar-right a:hover {
+  color: var(--roxo-neon);
+  transform: translateY(-2px);
+}
+
+.navbar-right i {
+  font-size: 22px;
+}
+
+/* Carrinho */
+.cart {
+  position: relative;
+}
+
+.cart-count {
+  background: var(--roxo);
+  border-radius: 50%;
+  font-size: 12px;
+  padding: 3px 6px;
+  position: absolute;
+  top: -6px;
+  right: -10px;
+  color: var(--branco);
+  font-weight: bold;
+  box-shadow: 0 0 10px var(--roxo);
+}
+
+/* ===== NAVBAR INFERIOR ===== */
+.navbar-bottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  padding: 16px 0;
+  background: var(--cinza-escuro);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.navbar-bottom a {
+  text-decoration: none;
+  color: var(--branco);
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  transition: all 0.3s;
+}
+
+.navbar-bottom a:hover {
+  color: var(--roxo-neon);
+  text-shadow: 0 0 10px var(--roxo);
+}
+
+/* ===== Layout geral ===== */
+.main-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  width: 100%;
+  padding: 22px;
+  box-sizing: border-box;
+  background-color: var(--preto);
+}
+
+/* ===== SLIDER HERO ===== */
+.hero-slider {
+  width: 50%;
+  max-width: 2165.63px;
+  height: 350px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 -8px 30px rgba(138,43,226,0.06);
+  background: linear-gradient(180deg, var(--panel), #0f0f10);
+}
+
+.hero-slider input { display: none; }
+
+.hero-track {
+  display: flex;
+  width: 300%;
+  height: 100%;
+  transition: transform 700ms cubic-bezier(.22,.9,.3,1);
+  transform: translateX(0%);
+}
+
+.hero-slide {
+  width: 33.3333%;
+  flex-shrink: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Controle via radio */
+#hero-1:checked ~ .hero-track { transform: translateX(0%); }
+#hero-2:checked ~ .hero-track { transform: translateX(-33.3333%); }
+#hero-3:checked ~ .hero-track { transform: translateX(-66.6666%); }
+
+/* Dots */
+.hero-dots {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 30;
+}
+
+.hero-dots .dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.22);
+  border: 1px solid rgba(255,255,255,0.06);
+  cursor: pointer;
+  transition: all .25s;
+  box-shadow: 0 0 8px rgba(0,0,0,0.6);
+}
+
+.hero-dots .dot:hover {
+  transform: scale(1.15);
+  background: var(--accent);
+}
+
+#hero-1:checked ~ .hero-dots label[for="hero-1"],
+#hero-2:checked ~ .hero-dots label[for="hero-2"],
+#hero-3:checked ~ .hero-dots label[for="hero-3"] {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 0 14px rgba(139,43,226,0.35);
+}
+
+/* ===== Responsividade ===== */
+@media (max-width: 1100px) {
+  .navbar-center { padding: 0 20px; }
+  .search-wrapper { width: 90%; }
+  .navbar-bottom { flex-wrap: wrap; gap: 20px; }
+}
+
+@media (max-width: 768px) {
+  .navbar-top {
+    flex-direction: column;
+    height: auto;
+    gap: 12px;
+  }
+  .navbar-right { justify-content: center; }
+}
+
+@media (max-width: 1200px) {
+  .hero-slider { height: 300px; }
+}
+
+@media (max-width: 860px) {
+  .main-wrapper { padding: 12px; gap: 18px; }
+  .hero-slider { height: 240px; width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .hero-slider { height: 160px; border-radius: 8px; }
+}

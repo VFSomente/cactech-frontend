@@ -1,0 +1,297 @@
+/* ===== Root variables (paleta CacTech: roxo + preto) ===== */
+:root {
+  --bg-dark: #0b0b0c;
+  --panel: #171718;
+  --accent: #8a2be2;
+  --accent-2: #b36cff;
+  --muted: #bdbdbd;
+  --glass: rgba(255, 255, 255, 0.03);
+  --preto: #0a0a0a;
+  --cinza-escuro: #1c1c1c;
+  --cinza: #2a2a2a;
+  --branco: #ffffff;
+  --roxo: #8a2be2;
+  --roxo-neon: #b36cff;
+  --muted: #bdbdbd;
+  --verde: #05b83d;
+}
+/* /* 
+/* ===== CONTAINER GERAL ===== */
+.navbar {
+  width: 100%;
+  background: linear-gradient(to right, var(--preto), var(--cinza-escuro));
+  color: var(--branco);
+  display: flex;
+  flex-direction: column;
+  border-bottom: 3px solid var(--roxo);
+  box-shadow: 0 0 25px rgba(138, 43, 226, 0.25);
+  font-family: "Poppins", sans-serif;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* ===== LINHA SUPERIOR ===== */
+.navbar-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 50px;
+  height: 95px;
+}
+
+/* ===== LOGO ===== */
+.logo {
+  height: 130px;
+  filter: drop-shadow(0 0 6px var(--roxo));
+}
+
+/* ===== TEXTO DO LOGO ===== */
+.logo-text {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #05b83d;
+  margin-left: 10px;
+  letter-spacing: 1px;
+  font-family: 'Poppins', sans-serif;
+  text-transform: uppercase;
+  align-self: center;
+  transition: color 0.3s ease;
+  text-shadow: 0 0 10px rgba(179, 136, 255, 0.4);
+}
+
+.logo-text span {
+  color: #0a762c;
+  transition: color 0.3s ease;
+}
+
+.logo-text:hover span {
+  color: var(--roxo);
+}
+
+/* ===== PESQUISA ===== */
+.navbar-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 0 40px;
+}
+
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  background: var(--cinza);
+  border-radius: 10px;
+  width: 70%;
+  transition: 0.3s;
+  border: 1px solid transparent;
+  height: 48px;
+}
+
+.search-wrapper:hover {
+  border-color: var(--roxo-neon);
+  box-shadow: 0 0 14px rgba(179, 108, 255, 0.3);
+}
+
+.search-bar {
+  flex: 1;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  color: var(--branco);
+  outline: none;
+  font-size: 16px;
+}
+
+.search-btn {
+  background: var(--roxo);
+  border: none;
+  color: var(--branco);
+  padding: 12px 20px;
+  border-radius: 0 10px 10px 0;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 18px;
+}
+
+.search-btn:hover {
+  background: var(--roxo-neon);
+  box-shadow: 0 0 15px var(--roxo);
+}
+
+/* ===== ICONES / CONTA ===== */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.navbar-right a {
+  color: var(--branco);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  transition: color 0.3s ease, transform 0.2s ease;
+  font-size: 15px;
+}
+
+.navbar-right a:hover {
+  color: var(--roxo-neon);
+  transform: translateY(-2px);
+}
+
+.navbar-right i {
+  font-size: 22px;
+}
+
+/* Carrinho */
+.cart {
+  position: relative;
+}
+
+.cart-count {
+  background: var(--roxo);
+  border-radius: 50%;
+  font-size: 12px;
+  padding: 3px 6px;
+  position: absolute;
+  top: -6px;
+  right: -10px;
+  color: var(--branco);
+  font-weight: bold;
+  box-shadow: 0 0 10px var(--roxo);
+}
+
+/* ===== NAVBAR INFERIOR ===== */
+.navbar-bottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  padding: 16px 0;
+  background: var(--cinza-escuro);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.navbar-bottom a {
+  text-decoration: none;
+  color: var(--branco);
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  transition: all 0.3s;
+}
+
+.navbar-bottom a:hover {
+  color: var(--roxo-neon);
+  text-shadow: 0 0 10px var(--roxo);
+}
+
+
+
+/* ===== Fundo principal ===== */
+.auth-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0a0a0a;
+  background-image: linear-gradient(to right, var(--preto), var(--cinza-escuro));
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: 100vh; /* Corrige o espaço da navbar */
+  color: #fff;
+  padding: 20px;
+}
+
+/* ===== Card ===== */
+.auth-card {
+  background-color: rgba(20, 20, 20, 0.95);
+  padding: 40px 50px;
+  border-radius: 20px;
+  box-shadow: 0 0 15px var(--roxo);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+
+
+/* ===== Título ===== */
+.auth-card h2 {
+  margin-bottom: 25px;
+  color: #c900fc;
+  text-shadow: 0 0 10px #e100ff;
+  font-weight: 600;
+}
+
+/* ===== Inputs ===== */
+.auth-card input {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background-color: #111;
+  color: #fff;
+  outline: none;
+  transition: all 0.3s ease;
+  font-size: 15px;
+}
+
+.auth-card input:focus {
+  box-shadow: 0 0 10px #8000ff;
+}
+
+/* ===== Botão ===== */
+.btn-neon {
+  width: 100%;
+  padding: 12px;
+  margin-top: 5px;
+  background: linear-gradient(90deg, #8000ff, #f700ff);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 0 15px #8000ff;
+}
+
+.btn-neon:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px #d004e2fb, 0 0 40px #8000ff;
+}
+
+/* ===== Alternância login/cadastro ===== */
+.auth-toggle {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 25px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.auth-toggle button {
+  flex: 1;
+  background: none;
+  border: none;
+  color: #aaa;
+  padding: 10px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s;
+  border-radius: 10px;
+}
+
+.auth-toggle button.active {
+  background: linear-gradient(90deg, #8000ff, #ff01ea);
+  color: #fff;
+  text-shadow: 0 0 8px #fff;
+}
+
+.auth-toggle button:hover {
+  color: #fff;
+}

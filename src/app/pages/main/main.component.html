@@ -1,0 +1,79 @@
+<header class="navbar">
+  <!-- Linha superior -->
+  <div class="navbar-top">
+    <div class="navbar-left">
+      <img src="../../assets/images/cactechlogo.png" alt="CacTech" class="logo" />
+    </div>
+    <a class="logo-text" href=""><p class="logo-text">Cac<span>Tech</span></p></a>
+    
+
+    <div class="navbar-center">
+      <div class="search-wrapper">
+        <input
+          type="text"
+          placeholder="Pesquise seu produto..."
+          class="search-bar"
+        />
+        <button class="search-btn">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="navbar-right">
+      <a class="account" (click)="navigateToLogin()" title="Minha Conta">
+        <i class="fas fa-user-circle"></i>
+        <span>Entrar</span>
+      </a>
+
+      <a href="#" class="wishlist" title="Favoritos">
+        <i class="fas fa-heart"></i>
+      </a>
+
+      <a href="#" class="cart" title="Carrinho">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-count">0</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Linha inferior com os links principais -->
+  <nav class="navbar-bottom">
+    <a href="#">DEPARTAMENTOS</a>
+    <a href="#">PROMOÇÕES</a>
+    <a href="#">PC GAMER</a>
+    <a href="#">KIT UPGRADE</a>
+    <a href="#">HARDWARE</a>
+    <a href="#">NOTEBOOKS</a>
+    <a href="#">MONITORES</a>
+    <a href="#">ATENDIMENTO</a>
+  </nav>
+</header>
+
+
+
+<main class="main-wrapper">
+  <section class="slider hero-slider">
+    <input type="radio" name="hero" id="hero-1" checked>
+    <input type="radio" name="hero" id="hero-2">
+    <input type="radio" name="hero" id="hero-3">
+
+    <div class="hero-track">
+      <div class="hero-slide">
+        <img src="../../../assets/images/sliderbemvindo.jpg" alt="Banner hardware 1" />
+      </div>
+      <div class="hero-slide">
+        <img src="../../../assets/images/slidermelhorloja.jpg" alt="Banner hardware 2" />
+      </div>
+      <div class="hero-slide">
+        <img src="../../../assets/images/daparaiba.png" alt="Banner hardware 3" />
+      </div>
+    </div>
+
+    <div class="hero-dots">
+      <label for="hero-1" class="dot"></label>
+      <label for="hero-2" class="dot"></label>
+      <label for="hero-3" class="dot"></label>
+    </div>
+  </section>
+</main>

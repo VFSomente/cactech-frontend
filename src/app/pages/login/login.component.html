@@ -1,0 +1,84 @@
+<header class="navbar">
+  <!-- Linha superior -->
+  <div class="navbar-top">
+    <div class="navbar-left">
+      <img src="../../assets/images/cactechlogo.png" alt="CacTech" class="logo" />
+    </div>
+    <a class="logo-text" href=""><p class="logo-text">Cac<span>Tech</span></p></a>
+    
+
+    <div class="navbar-center">
+      <div class="search-wrapper">
+        <input
+          type="text"
+          placeholder="Pesquise seu produto..."
+          class="search-bar"
+        />
+        <button class="search-btn">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="navbar-right">
+      <a href="#" class="account" title="Minha Conta">
+        <i class="fas fa-user-circle"></i>
+        <span>Entrar</span>
+      </a>
+
+      <a href="#" class="wishlist" title="Favoritos">
+        <i class="fas fa-heart"></i>
+      </a>
+
+      <a href="#" class="cart" title="Carrinho">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-count">0</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Linha inferior com os links principais -->
+  <nav class="navbar-bottom">
+    <a href="#">DEPARTAMENTOS</a>
+    <a href="#">PROMOÇÕES</a>
+    <a href="#">PC GAMER</a>
+    <a href="#">KIT UPGRADE</a>
+    <a href="#">HARDWARE</a>
+    <a href="#">NOTEBOOKS</a>
+    <a href="#">MONITORES</a>
+    <a href="#">ATENDIMENTO</a>
+  </nav>
+</header>
+
+
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-toggle">
+      <button 
+        [class.active]="isLogin" 
+        (click)="toggleForm(true)">
+        Entrar
+      </button>
+      <button 
+        [class.active]="!isLogin" 
+        (click)="toggleForm(false)">
+        Cadastrar
+      </button>
+    </div>
+
+    <h2>{{ isLogin ? 'Bem-vindo de volta!' : 'Crie sua conta' }}</h2>
+
+    <form *ngIf="isLogin" (ngSubmit)="login()">
+      <input type="email" placeholder="E-mail" [(ngModel)]="loginEmail" name="loginEmail" required />
+      <input type="password" placeholder="Senha" [(ngModel)]="loginPassword" name="loginPassword" required />
+      <button type="submit" class="btn-neon">Entrar</button>
+    </form>
+
+    <form *ngIf="!isLogin" (ngSubmit)="register()">
+      <input type="text" placeholder="Nome completo" [(ngModel)]="registerName" name="registerName" required />
+      <input type="email" placeholder="E-mail" [(ngModel)]="registerEmail" name="registerEmail" required />
+      <input type="password" placeholder="Senha" [(ngModel)]="registerPassword" name="registerPassword" required />
+      <button type="submit" class="btn-neon">Cadastrar</button>
+    </form>
+  </div>
+</div>
