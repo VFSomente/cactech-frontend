@@ -1,0 +1,33 @@
+<div class="product-page">
+  <div class="product-container">
+    <div class="product-left">
+      <img [src]="product.image" alt="{{ product.name }}" class="product-img" />
+    </div>
+
+    <div class="product-right">
+      <h2 class="product-name">{{ product.name }}</h2>
+      <p class="product-id">Código: {{ productId }}</p>
+      <p class="product-description">{{ product.description }}</p>
+
+      <div class="product-price">
+        <span class="currency">R$</span>
+        <span class="amount">{{ product.price }}</span>
+      </div>
+
+      <div class="product-payment">
+        <p>Pagamento em até <strong>12x sem juros</strong></p>
+        <p class="pix">ou <span>10% OFF</span> no Pix</p>
+      </div>
+
+      <div class="actions">
+        <button class="btn-buy">Comprar agora</button>
+        <button class="btn-cart" (click)="addToCart()">Adicionar ao carrinho</button>
+        <button class="btn-back" (click)="voltar()">Voltar</button>
+      </div>
+
+      <div class="shipping">
+        <p><i class="fas fa-truck"></i> Frete grátis para toda a Paraíba</p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,61 @@
+<div class="cart-page">
+  <div class="cart-container">
+    <!-- Título -->
+    <h1 class="cart-title">
+      🛒 Meu Carrinho
+    </h1>
+
+    <!-- Lista de produtos -->
+    <div class="cart-items">
+      <div class="cart-item" *ngFor="let item of cartItems">
+        <img [src]="item.image" [alt]="item.name" />
+
+        <div class="cart-item-info">
+          <h3>{{ item.name }}</h3>
+          <p>{{ item.description }}</p>
+        </div>
+
+        <div class="cart-item-price">
+          R$ {{ item.price | number: '1.2-2' }}
+        </div>
+
+        <button class="remove-btn" (click)="removeFromCart(item)">
+          Remover
+        </button>
+      </div>
+    </div>
+
+    <!-- Resumo do pedido -->
+    <div class="cart-summary" *ngIf="cartItems.length > 0">
+      <h2>Resumo do Pedido</h2>
+
+      <div class="summary-details">
+        <span>Total de Itens:</span>
+        <span>{{ getTotalItems() }}</span>
+      </div>
+
+      <div class="summary-details">
+        <span>Valor Total:</span>
+        <span>R$ {{ getTotalPrice() | number: '1.2-2' }}</span>
+      </div>
+
+      <div class="cart-actions">
+        <button class="cart-btn clear" (click)="clearCart()">
+          Limpar Carrinho
+        </button>
+        <button class="cart-btn checkout" (click)="checkout()">
+          Finalizar Compra
+        </button>
+      </div>
+    </div>
+
+    <!-- Caso o carrinho esteja vazio -->
+    <div *ngIf="cartItems.length === 0" class="cart-empty">
+      <h3>🛍️ Seu carrinho está vazio</h3>
+      <p>Adicione produtos e volte aqui para continuar!</p>
+      <button class="cart-btn checkout" (click)="voltar()">
+        Ver Produtos
+      </button>
+    </div>
+  </div>
+</div>
