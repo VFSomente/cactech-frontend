@@ -1,0 +1,23 @@
+<main><div class="favorites-container" *ngIf="favorites.length > 0; else emptyState">
+  <h2>Meus Favoritos 💜</h2>
+  <div class="favorites-grid">
+    <div class="favorite-card" *ngFor="let product of favorites">
+      <img [src]="product.image" [alt]="product.name" />
+      <h3>{{ product.name }}</h3>
+      <p >{{ product.price | currency: 'BRL' }}</p>
+
+      <div class="actions">
+        <button (click)="navigateToProduct(product.id)">Ver produto</button>
+        <button class="remove" (click)="removeFavorite(product.id)">Remover</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #emptyState>
+  <div class="empty">
+    <p>Você ainda não tem favoritos 💔</p>
+    <button (click)="goToProducts()">Explorar produtos</button>
+  </div>
+</ng-template>
+</main>

@@ -5,50 +5,68 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class CartService {
-  private cartItems: any[] = [];
-  private cartCount = new BehaviorSubject<number>(0);
-
-  cartCount$ = this.cartCount.asObservable();
   private cart: any[] = [];
+  
+  // 🔹 Observables para contagem e itens do carrinho
+  private cartCount = new BehaviorSubject<number>(0);
+  cartCount$ = this.cartCount.asObservable();
+
+  private cartItemsSubject = new BehaviorSubject<any[]>([]);
+  cartItems$ = this.cartItemsSubject.asObservable();
 
   constructor() {
-    // Recupera do localStorage ao iniciar
-    const saved = localStorage.getItem('cart');
-    if (saved) {
-      this.cartItems = JSON.parse(saved);
-      this.cartCount.next(this.cartItems.length);
+    const savedCart = localStorage.getItem('cart');
+    this.cart = savedCart ? JSON.parse(savedCart) : [];
+    this.updateCartState();
+  }
+
+  // 🔹 Retorna o carrinho atual
+  getCart() {
+    return this.cart;
+  }
+
+  // 🔹 Adiciona um item
+  addToCart(product: any) {
+    this.cart.push(product);
+    this.updateCartState();
+  }
+
+  // 🔹 Remove apenas uma ocorrência do produto
+  removeFromCart(item: any) {
+    const index = this.cart.findIndex(cartItem => cartItem.id === item.id);
+    if (index !== -1) {
+      this.cart.splice(index, 1);
+      this.updateCartState();
     }
   }
 
-  addToCart(product: any) {
-    this.cartItems.push(product);
-    this.updateStorage();
-  }
-
-  removeFromCart(id: number) {
-    this.cartItems = this.cartItems.filter(item => item.id !== id);
-    this.updateStorage();
-  }
-
+  // 🔹 Limpa o carrinho
   clearCart() {
-    this.cartItems = [];
-    this.updateStorage();
+    this.cart = [];
+    this.updateCartState();
   }
 
-  getCart() {
-    return this.cartItems;
-  }
-
-    getTotalItems() {
-    return this.cart.reduce((sum, item) => sum + item.quantity, 0);
-  }
-
+  // 🔹 Total do carrinho
   getTotal() {
-    return this.cartItems.reduce((sum, item) => sum + item.price, 0);
+    return this.cart.reduce((sum, item) => sum + item.price, 0);
   }
 
-  private updateStorage() {
-    localStorage.setItem('cart', JSON.stringify(this.cartItems));
-    this.cartCount.next(this.cartItems.length);
+  // 🔹 Total de itens
+  getTotalItems() {
+    return this.cart.length;
+  }
+
+  // ===========================================================
+  // 🔧 MÉTODOS AUXILIARES INTERNOS
+  // ===========================================================
+
+  private updateCartState() {
+    this.saveCart();
+    this.cartCount.next(this.cart.length);
+    this.cartItemsSubject.next([...this.cart]); // 🔹 emite nova cópia do carrinho
+  }
+
+  private saveCart() {
+    localStorage.setItem('cart', JSON.stringify(this.cart));
   }
 }

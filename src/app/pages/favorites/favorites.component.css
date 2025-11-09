@@ -1,0 +1,127 @@
+:root {
+  --panel: #171718;
+  --muted: #bdbdbd;
+  --preto: #0a0a0a;
+  --cinza-escuro: #1c1c1c;
+  --cinza: #2a2a2a;
+  --branco: #ffffff;
+  --roxo: #8a2be2;
+  --roxo-neon: #b36cff;
+}
+
+/* ======== CONTAINER ======== */
+.favorites-container {
+  padding: 2rem;
+  text-align: center;
+  background-color: var(--preto);
+  min-height: 100vh;
+}
+
+.favorites-container h2 {
+  color: var(--roxo-neon);
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+}
+
+/* ======== GRID ======== */
+.favorites-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1.5rem;
+}
+
+/* ======== CARD ======== */
+.favorite-card {
+  background: var(--cinza-escuro);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 0 10px rgba(179, 108, 255, 0.15);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.favorite-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 0 16px rgba(179, 108, 255, 0.25);
+}
+
+.favorite-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: contain;
+  margin-bottom: 0.75rem;
+  border-radius: 8px;
+  background-color: var(--branco);
+}
+
+.favorite-card h3 {
+  color: var(--branco);
+  margin: 0.5rem 0 0.25rem;
+  font-size: 1.1rem;
+}
+
+.favorite-card p {
+  color: var(--branco);
+  font-weight: 500;
+}
+
+/* ======== BUTTONS ======== */
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+  gap: 0.5rem;
+}
+
+.actions button {
+  flex: 1;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--roxo);
+  color: var(--branco);
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.actions button:hover {
+  background-color: var(--roxo-neon);
+  transform: scale(1.03);
+}
+
+.actions .remove {
+  background-color: #e63946;
+}
+
+.actions .remove:hover {
+  background-color: #ff4d5a;
+}
+
+/* ======== EMPTY STATE ======== */
+.empty {
+  text-align: center;
+  padding: 3rem;
+  color: var(--muted);
+}
+
+.empty p {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.empty button {
+  background-color: var(--roxo);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  color: var(--branco);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.empty button:hover {
+  background-color: var(--roxo-neon);
+  transform: scale(1.05);
+}
+

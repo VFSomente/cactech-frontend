@@ -1,0 +1,103 @@
+<section class="checkout-page">
+  <div class="checkout-container">
+    <h2 class="checkout-title">Finalizar Compra</h2>
+
+    <!-- 🛍️ Itens no Carrinho -->
+    <div class="checkout-products" *ngIf="cartItems.length > 0">
+      <h3>Itens no Carrinho</h3>
+      <div *ngFor="let item of cartItems" class="checkout-item">
+        <img [src]="item.image" alt="{{item.name}}" />
+        <div>
+          <p>{{ item.name }}</p>
+          <span>R$ {{ item.price | number:'1.2-2' }}</span>
+        </div>
+      </div>
+
+      <!-- 💰 Total -->
+      <div class="summary-details">
+        <span>Valor Total:</span>
+        <span>R$ {{ getTotalPrice() | number: '1.2-2' }}</span>
+      </div>
+    </div>
+
+    <!-- 💳 Métodos de Pagamento -->
+    <div class="payment-methods">
+      <div
+        class="payment-method"
+        [class.active]="selectedMethod === 'cartao'"
+        (click)="selectMethod('cartao')"
+      >
+        💳 Cartão de Crédito
+      </div>
+
+      <div
+        class="payment-method"
+        [class.active]="selectedMethod === 'boleto'"
+        (click)="selectMethod('boleto')"
+      >
+        🧾 Boleto Bancário
+      </div>
+
+      <div
+        class="payment-method"
+        [class.active]="selectedMethod === 'pix'"
+        (click)="selectMethod('pix')"
+      >
+        💸 Pix
+      </div>
+    </div>
+
+    <!-- 🪪 Cartão de Crédito -->
+    <div *ngIf="selectedMethod === 'cartao'" class="card-form">
+      <label for="cardName">Nome no Cartão</label>
+      <input
+        type="text"
+        id="cardName"
+        placeholder="Ex: Victor Fernandes"
+      />
+
+      <label for="cardNumber">Número do Cartão</label>
+      <input
+        type="text"
+        id="cardNumber"
+        placeholder="1234 5678 9012 3456"
+      />
+
+      <div class="card-row">
+        <div class="card-field">
+          <label for="cardExpiry">Validade</label>
+          <input type="text" id="cardExpiry" placeholder="MM/AA" />
+        </div>
+        <div class="card-field">
+          <label for="cardCvv">CVV</label>
+          <input type="text" id="cardCvv" placeholder="123" />
+        </div>
+      </div>
+    </div>
+
+    <!-- 🧾 Boleto -->
+    <div *ngIf="selectedMethod === 'boleto'" class="boleto-section">
+      <h3>Gerar Boleto Bancário</h3>
+      <p>O boleto será válido por 3 dias após a emissão.</p>
+      <button class="boleto-btn" (click)="gerarBoleto()">Gerar Boleto</button>
+    </div>
+
+    <!-- 💸 PIX -->
+    <div *ngIf="selectedMethod === 'pix'" class="pix-section">
+      <h3>Pagamento via Pix</h3>
+      <p>Escaneie o QR Code ou copie o código abaixo:</p>
+      <div class="pix-code">
+        {{
+          pixCode ||
+          '00020126580014BR.GOV.BCB.PIX0136pix@cactech.com520400005303986540512.345802BR5920CacTech LTDA6009SAO PAULO62100506ABC1236304ABCD'
+        }}
+      </div>
+      <button class="copy-btn" (click)="copiarPix()">Copiar Código</button>
+    </div>
+
+    <!-- ✅ Finalizar Compra -->
+    <button class="finalize-btn" (click)="finalizarCompra()">
+      Finalizar Compra
+    </button>
+  </div>
+</section>

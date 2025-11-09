@@ -1,0 +1,362 @@
+/* ==============================================
+   🎨 VARIÁVEIS DE COR (TEMA CACTECH)
+   ============================================== */
+:root {
+  --panel: #171718;
+  --muted: #bdbdbd;
+  --preto: #0a0a0a;
+  --cinza-escuro: #1c1c1c;
+  --cinza: #2a2a2a;
+  --branco: #ffffff;
+  --roxo: #8a2be2;
+  --roxo-neon: #b36cff;
+}
+
+/* ==============================================
+   🧾 CONTAINER GERAL
+   ============================================== */
+.checkout-page {
+  background-color: var(--preto);
+  color: var(--branco);
+  min-height: 100vh;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.checkout-container {
+  background-color: var(--panel);
+  width: 100%;
+  max-width: 1000px;
+  border-radius: 16px;
+  box-shadow: 0 0 25px rgba(138, 43, 226, 0.2);
+  padding: 30px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* ==============================================
+   🧩 TÍTULO
+   ============================================== */
+.checkout-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--roxo-neon);
+  text-align: center;
+  border-bottom: 2px solid rgba(255,255,255,0.1);
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+/* ==============================================
+   💳 MÉTODOS DE PAGAMENTO
+   ============================================== */
+.payment-methods {
+  display: flex;
+  justify-content: space-around;
+  background-color: var(--cinza-escuro);
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.payment-method {
+  flex: 1;
+  text-align: center;
+  padding: 12px 0;
+  border-radius: 10px;
+  margin: 0 8px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.payment-method:hover {
+  color: var(--branco);
+  border-color: var(--roxo);
+}
+
+.payment-method.active {
+  background-color: var(--roxo);
+  color: var(--branco);
+  font-weight: 600;
+  border-color: var(--roxo-neon);
+  box-shadow: 0 0 15px var(--roxo-neon);
+}
+
+/* ==============================================
+   💳 FORMULÁRIO DE CARTÃO
+   ============================================== */
+.card-form {
+  background-color: var(--cinza);
+  padding: 25px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.3);
+}
+
+.card-form label {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.card-form input {
+  background-color: var(--cinza-escuro);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--branco);
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.card-form input:focus {
+  border-color: var(--roxo);
+  box-shadow: 0 0 8px rgba(179,108,255,0.3);
+}
+
+/* ==============================================
+   🧾 BOLETO
+   ============================================== */
+.boleto-section {
+  background-color: var(--cinza);
+  padding: 25px;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.boleto-section h3 {
+  color: var(--roxo-neon);
+  margin-bottom: 12px;
+}
+
+.boleto-section p {
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+.boleto-btn {
+  background-color: var(--roxo);
+  color: var(--branco);
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.boleto-btn:hover {
+  background-color: var(--roxo-neon);
+  transform: scale(1.05);
+}
+
+/* ==============================================
+   💸 PIX
+   ============================================== */
+.pix-section {
+  background-color: var(--cinza);
+  padding: 25px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.pix-section h3 {
+  color: var(--roxo-neon);
+  margin-bottom: 15px;
+}
+
+.pix-code {
+  background-color: var(--cinza-escuro);
+  padding: 14px;
+  border-radius: 8px;
+  font-family: monospace;
+  color: var(--branco);
+  margin-bottom: 15px;
+  word-wrap: break-word;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.copy-btn {
+  background-color: transparent;
+  border: 1px solid var(--roxo);
+  color: var(--roxo);
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.copy-btn:hover {
+  background-color: var(--roxo);
+  color: var(--branco);
+}
+
+/* ==============================================
+   ✅ BOTÃO FINALIZAR
+   ============================================== */
+.finalize-btn {
+  width: 100%;
+  background: linear-gradient(90deg, var(--roxo) 0%, var(--roxo-neon) 100%);
+  border: none;
+  padding: 15px;
+  font-size: 1.1rem;
+  color: var(--branco);
+  font-weight: bold;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 15px;
+}
+
+.finalize-btn:hover {
+  box-shadow: 0 0 20px rgba(179,108,255,0.6);
+  transform: scale(1.02);
+}
+
+/* ==============================================
+   📱 RESPONSIVIDADE
+   ============================================== */
+@media (max-width: 768px) {
+  .checkout-container {
+    padding: 20px;
+  }
+
+  .payment-methods {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .payment-method {
+    margin: 5px 0;
+  }
+}
+/* ===========================================
+   🛒 CHECKOUT - LISTA DE PRODUTOS
+   =========================================== */
+
+.checkout-products {
+  background-color: var(--cinza-escuro);
+  border-radius: 14px;
+  padding: 25px;
+  margin: 20px auto;
+  width: 100%;
+  max-width: 700px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  color: var(--branco);
+}
+
+.checkout-products h3 {
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+  color: var(--roxo-neon);
+  border-bottom: 2px solid var(--roxo);
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+/* Cada item */
+.checkout-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 16px;
+  background-color: var(--cinza);
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.checkout-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 14px rgba(138, 43, 226, 0.25);
+}
+
+/* Imagem do produto */
+.checkout-item img {
+  width: 65px;
+  height: 65px;
+  object-fit: cover;
+  border-radius: 10px;
+  background-color: var(--preto);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Informações do produto */
+.checkout-item div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.checkout-item p {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--branco);
+}
+
+.checkout-item span {
+  font-size: 0.95rem;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* ===========================================
+   💰 RESUMO DO TOTAL
+   =========================================== */
+
+.summary-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--cinza);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 15px 20px;
+  margin-top: 25px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--branco);
+}
+
+.summary-details span:first-child {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.summary-details span:last-child {
+  color: var(--roxo-neon);
+  font-size: 1.2rem;
+}
+
+/* Responsivo */
+@media (max-width: 600px) {
+  .checkout-products {
+    padding: 20px;
+  }
+
+  .checkout-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .checkout-item img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .summary-details {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

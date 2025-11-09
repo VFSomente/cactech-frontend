@@ -56,8 +56,10 @@ export class CartComponent implements OnInit {
   }
 
   // ✅ Finalizar compra
-  checkout(): void {
-    alert('Compra finalizada! Obrigado por comprar na CacTech 🚀');
-    this.clearCart();
+  finalizarCompra() {
+    // 🔹 Navega para o checkout com os produtos no estado da rota
+    this.router.navigate(['/checkout'], {
+      state: { cartItems: this.cartItems }
+    });
   }
 }

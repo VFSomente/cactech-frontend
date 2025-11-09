@@ -1,4 +1,6 @@
-/* ===== Root variables (paleta CacTech: roxo + preto) ===== */
+/* ==============================================
+   🎨 VARIÁVEIS GLOBAIS — PALHETA CacTech
+   ============================================== */
 :root {
   --bg-dark: #0b0b0c;
   --panel: #171718;
@@ -14,7 +16,11 @@
   --roxo-neon: #b36cff;
 }
 
-/* ===== CONTAINER GERAL ===== */
+/* ==============================================
+   🧭 SEÇÃO HEADER / NAVBAR
+   ============================================== */
+
+/* ===== Container geral da navbar ===== */
 .navbar {
   width: 100%;
   background: linear-gradient(to right, var(--preto), var(--cinza-escuro));
@@ -29,7 +35,7 @@
   z-index: 1000;
 }
 
-/* ===== LINHA SUPERIOR ===== */
+/* ===== Linha superior ===== */
 .navbar-top {
   display: flex;
   align-items: center;
@@ -38,22 +44,20 @@
   height: 95px;
 }
 
-/* ===== LOGO ===== */
+/* ===== Logo ===== */
 .logo {
   height: 130px;
   filter: drop-shadow(0 0 6px var(--roxo));
 }
 
-/* ===== TEXTO DO LOGO ===== */
+/* ===== Texto do logo ===== */
 .logo-text {
   font-size: 1.3rem;
   font-weight: 600;
   color: #05b83d;
   margin-left: 10px;
   letter-spacing: 1px;
-  font-family: 'Poppins', sans-serif;
   text-transform: uppercase;
-  align-self: center;
   transition: color 0.3s ease;
   text-shadow: 0 0 10px rgba(179, 136, 255, 0.4);
 }
@@ -67,7 +71,7 @@
   color: var(--roxo);
 }
 
-/* ===== PESQUISA ===== */
+/* ===== Pesquisa ===== */
 .navbar-center {
   flex: 1;
   display: flex;
@@ -117,11 +121,12 @@
   box-shadow: 0 0 15px var(--roxo);
 }
 
-/* ===== ICONES / CONTA ===== */
+/* ===== Ícones / Conta ===== */
 .navbar-right {
   display: flex;
   align-items: center;
   gap: 25px;
+  cursor: pointer;
 }
 
 .navbar-right a {
@@ -129,11 +134,8 @@
   text-decoration: none;
   display: flex;
   align-items: center;
-  cursor: pointer;
   gap: 8px;
-  position: relative;
   transition: color 0.3s ease, transform 0.2s ease;
-  font-size: 15px;
 }
 
 .navbar-right a:hover {
@@ -163,7 +165,7 @@
   box-shadow: 0 0 10px var(--roxo);
 }
 
-/* ===== NAVBAR INFERIOR ===== */
+/* ===== Linha inferior da navbar ===== */
 .navbar-bottom {
   display: flex;
   justify-content: center;
@@ -179,7 +181,6 @@
   color: var(--branco);
   font-weight: 500;
   font-size: 15px;
-  letter-spacing: 0.5px;
   transition: all 0.3s;
 }
 
@@ -188,18 +189,21 @@
   text-shadow: 0 0 10px var(--roxo);
 }
 
-/* ===== Layout geral ===== */
+/* ==============================================
+   🖥️ MAIN WRAPPER (container geral)
+   ============================================== */
 .main-wrapper {
   display: flex;
   flex-direction: column;
   gap: 28px;
   width: 100%;
   padding: 22px;
-  box-sizing: border-box;
   background-color: var(--preto);
 }
 
-/* ===== SLIDER HERO ===== */
+/* ==============================================
+   🎞️ SEÇÃO SLIDER PRINCIPAL
+   ============================================== */
 .hero-slider {
   width: 50%;
   max-width: 2165.63px;
@@ -243,6 +247,7 @@
 #hero-2:checked ~ .hero-track { transform: translateX(-33.3333%); }
 #hero-3:checked ~ .hero-track { transform: translateX(-66.6666%); }
 
+
 /* Dots */
 .hero-dots {
   position: absolute;
@@ -277,35 +282,23 @@
   box-shadow: 0 0 14px rgba(139,43,226,0.35);
 }
 
-/* ===== Responsividade ===== */
-@media (max-width: 1100px) {
-  .navbar-center { padding: 0 20px; }
-  .search-wrapper { width: 90%; }
-  .navbar-bottom { flex-wrap: wrap; gap: 20px; }
+/* 🎞️ Animação automática do slider */
+@keyframes autoSlide {
+  0%, 25%   { transform: translateX(0%); }        /* Slide 1 */
+  35%, 60%  { transform: translateX(-33.3333%); } /* Slide 2 */
+  70%, 95%  { transform: translateX(-66.6666%); } /* Slide 3 */
+  100%      { transform: translateX(0%); }         /* Volta ao 1 */
 }
 
-@media (max-width: 768px) {
-  .navbar-top {
-    flex-direction: column;
-    height: auto;
-    gap: 12px;
-  }
-  .navbar-right { justify-content: center; }
+/* Aplica a animação à faixa de slides */
+.hero-track {
+  animation: autoSlide 15s infinite cubic-bezier(.22,.9,.3,1);
 }
 
-@media (max-width: 1200px) {
-  .hero-slider { height: 300px; }
-}
 
-@media (max-width: 860px) {
-  .main-wrapper { padding: 12px; gap: 18px; }
-  .hero-slider { height: 240px; width: 100%; }
-}
-
-@media (max-width: 480px) {
-  .hero-slider { height: 160px; border-radius: 8px; }
-}
-/* ====== SEÇÃO DE PRODUTOS ====== */
+/* ==============================================
+   🛒 SEÇÃO PRODUTOS EM DESTAQUE
+   ============================================== */
 .featured-products {
   text-align: center;
   padding: 40px 20px;
@@ -342,24 +335,70 @@
   box-shadow: 0 0 18px rgba(179, 108, 255, 0.3);
 }
 
-.product-image img {
-  width: 140px;
-  height: 140px;
-  object-fit: contain;
-  margin-bottom: 15px;
+/* ===== Imagem ===== */
+.product-image {
+  position: relative;
+  width: 100%;
+  height: 220px; /* altura um pouco maior para equilíbrio */
+  background-color: var(--branco);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+.product-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: scale-down; /* mantém proporção e usa todo o espaço possível */
+  display: block;
+  margin: 0 auto;
+}
+
+
+/* ===== Botão de Favorito ===== */
+.favorite-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: var(--cinza-escuro);
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+  z-index: 5;
+}
+
+.favorite-btn:hover {
+  color: var(--roxo-neon);
+  transform: scale(1.1);
+  background: var(--cinza);
+}
+
+.favorite-btn.active {
+  color: var(--roxo-neon);
+  background: var(--cinza);
+  animation: glowPulse 1.5s infinite;
+}
+
+/* ===== Info / Botão Comprar ===== */
 .product-info h3 {
   font-size: 1rem;
   color: var(--cinza-escuro);
-  margin-bottom: 8px;
 }
 
 .price {
   color: var(--cinza-escuro);
   font-weight: 600;
   font-size: 1.1rem;
-  margin-bottom: 10px;
 }
 
 .buy-btn {
@@ -377,12 +416,13 @@
   box-shadow: 0 0 12px var(--roxo);
 }
 
-/* ===== RODAPÉ ===== */
+/* ==============================================
+   ⚙️ RODAPÉ (FOOTER)
+   ============================================== */
 .footer {
   background-color: var(--preto);
   color: #ddd;
   padding: 50px 40px 20px;
-  font-size: 0.95rem;
 }
 
 .footer-container {
@@ -397,18 +437,6 @@
   color: var(--roxo-neon);
   font-size: 1.1rem;
   margin-bottom: 16px;
-  position: relative;
-}
-
-.footer-column h3::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -6px;
-  width: 40px;
-  height: 2px;
-  background: var(--verde-neon);
-  border-radius: 4px;
 }
 
 .footer-column ul {
@@ -427,7 +455,7 @@
 }
 
 .footer-column ul li a:hover {
-  color: var(--verde-neon);
+  color: var(--roxo-neon);
 }
 
 /* Newsletter */
@@ -436,7 +464,6 @@
   margin-bottom: 20px;
   background: #222;
   border-radius: 8px;
-  overflow: hidden;
 }
 
 .newsletter input {
@@ -464,7 +491,6 @@
 .social-icons {
   display: flex;
   gap: 10px;
-  margin-bottom: 18px;
 }
 
 .social-icons a {
@@ -474,7 +500,7 @@
 }
 
 .social-icons a:hover {
-  color: var(--verde-neon);
+  color: var(--roxo-neon);
 }
 
 /* Pagamentos */
@@ -504,11 +530,31 @@
 }
 
 .footer-bottom span {
-  color: var(--verde-neon);
+  color: var(--roxo-neon);
 }
 
-.footer-bottom .cnpj {
-  font-size: 0.8rem;
-  margin-top: 5px;
-  opacity: 0.8;
+/* ==============================================
+   📱 RESPONSIVIDADE
+   ============================================== */
+@media (max-width: 1100px) {
+  .navbar-center { padding: 0 20px; }
+  .search-wrapper { width: 90%; }
+  .navbar-bottom { flex-wrap: wrap; gap: 20px; }
+}
+
+@media (max-width: 768px) {
+  .navbar-top {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .navbar-right { justify-content: center; }
+}
+
+@media (max-width: 860px) {
+  .main-wrapper { padding: 12px; gap: 18px; }
+  .hero-slider { width: 100%; height: 240px; }
+}
+
+@media (max-width: 480px) {
+  .hero-slider { height: 160px; border-radius: 8px; }
 }
