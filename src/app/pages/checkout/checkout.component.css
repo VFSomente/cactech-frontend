@@ -1,53 +1,50 @@
 /* ==============================================
-   🎨 VARIÁVEIS DE COR (TEMA CACTECH)
+   🎨 TEMA GERAL - CacTech
    ============================================== */
 :root {
-  --panel: #171718;
-  --muted: #bdbdbd;
   --preto: #0a0a0a;
-  --cinza-escuro: #1c1c1c;
-  --cinza: #2a2a2a;
+  --cinza-escuro: #1b1b1b;
+  --cinza: #2b2b2b;
   --branco: #ffffff;
   --roxo: #8a2be2;
   --roxo-neon: #b36cff;
+  --muted: #bdbdbd;
 }
 
 /* ==============================================
-   🧾 CONTAINER GERAL
+   🧾 PÁGINA PRINCIPAL
    ============================================== */
 .checkout-page {
-  background-color: var(--preto);
-  color: var(--branco);
   min-height: 100vh;
-  padding: 40px 20px;
+  background: var(--preto);
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  padding: 50px 20px;
+  color: var(--branco);
 }
 
 .checkout-container {
-  background-color: var(--panel);
+  background: var(--cinza-escuro);
   width: 100%;
-  max-width: 1000px;
-  border-radius: 16px;
-  box-shadow: 0 0 25px rgba(138, 43, 226, 0.2);
-  padding: 30px 40px;
+  max-width: 1100px;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 0 30px rgba(138, 43, 226, 0.2);
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 40px;
 }
 
 /* ==============================================
-   🧩 TÍTULO
+   🏷️ TÍTULO
    ============================================== */
 .checkout-title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--roxo-neon);
   text-align: center;
-  border-bottom: 2px solid rgba(255,255,255,0.1);
-  padding-bottom: 15px;
-  margin-bottom: 20px;
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: var(--roxo-neon);
+  margin-bottom: 10px;
 }
 
 /* ==============================================
@@ -55,22 +52,21 @@
    ============================================== */
 .payment-methods {
   display: flex;
-  justify-content: space-around;
-  background-color: var(--cinza-escuro);
-  padding: 16px;
-  border-radius: 12px;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  gap: 15px;
 }
 
 .payment-method {
-  flex: 1;
+  flex: 1 1 30%;
   text-align: center;
-  padding: 12px 0;
-  border-radius: 10px;
-  margin: 0 8px;
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--cinza);
   color: var(--muted);
-  cursor: pointer;
-  transition: all 0.3s ease;
   border: 1px solid transparent;
+  cursor: pointer;
+  transition: 0.3s ease;
 }
 
 .payment-method:hover {
@@ -79,82 +75,189 @@
 }
 
 .payment-method.active {
-  background-color: var(--roxo);
+  background: linear-gradient(90deg, var(--roxo), var(--roxo-neon));
   color: var(--branco);
-  font-weight: 600;
-  border-color: var(--roxo-neon);
-  box-shadow: 0 0 15px var(--roxo-neon);
+  font-weight: bold;
+  box-shadow: 0 0 15px rgba(179, 108, 255, 0.4);
 }
 
 /* ==============================================
-   💳 FORMULÁRIO DE CARTÃO
+   💳 CARTÃO DE CRÉDITO ANIMADO
+   ============================================== */
+.credit-card-container {
+  display: flex;
+  justify-content: center;
+  perspective: 1200px;
+  margin-top: 1.5rem;
+}
+
+.credit-card {
+  width: 360px;
+  height: 220px;
+  border-radius: 18px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.9s ease;
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.6);
+}
+
+.credit-card.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 18px;
+  backface-visibility: hidden;
+  overflow: hidden;
+}
+
+/* Frente */
+.card-front {
+  background: linear-gradient(135deg, #2b2b2b, #3b1c4f);
+  padding: 20px;
+  color: var(--branco);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Chip e bandeira */
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-chip {
+  width: 55px;
+  height: 38px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, gold, #ffcc00);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+}
+
+.card-brand {
+  width: 65px;
+  object-fit: contain;
+  border-radius: 8%;
+}
+
+/* Número, nome, validade */
+.card-number {
+  text-align: center;
+  font-family: 'Courier New', monospace;
+  font-size: 1.3rem;
+  letter-spacing: 2px;
+}
+
+.card-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+
+.card-holder span,
+.card-expiration span {
+  display: block;
+  font-size: 0.7rem;
+  color: #ccc;
+}
+
+/* Verso */
+.card-back {
+  background: linear-gradient(135deg, #3c1053, #8a2be2);
+  transform: rotateY(180deg);
+  padding: 20px;
+}
+
+.magnetic-strip {
+  background: rgba(0, 0, 0, 0.7);
+  height: 40px;
+  border-radius: 6px;
+  margin-top: 10px;
+}
+
+.cvv-box {
+  background: #fff;
+  color: #000;
+  width: 80px;
+  text-align: center;
+  padding: 8px;
+  border-radius: 8px;
+  margin-top: 50px;
+  margin-left: auto;
+  font-weight: bold;
+}
+
+/* ==============================================
+   📋 FORMULÁRIO DO CARTÃO
    ============================================== */
 .card-form {
-  background-color: var(--cinza);
-  padding: 25px;
-  border-radius: 12px;
   display: flex;
   flex-direction: column;
   gap: 15px;
-  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.3);
+  background: var(--cinza);
+  padding: 25px;
+  border-radius: 12px;
+  margin-top: 1rem;
 }
 
 .card-form label {
   font-size: 0.9rem;
   color: var(--muted);
-  margin-bottom: 6px;
 }
 
 .card-form input {
-  background-color: var(--cinza-escuro);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: var(--branco);
-  border-radius: 8px;
   padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: var(--cinza-escuro);
+  color: var(--branco);
   font-size: 1rem;
   outline: none;
-  transition: border-color 0.3s ease;
+  transition: 0.3s;
 }
 
 .card-form input:focus {
   border-color: var(--roxo);
-  box-shadow: 0 0 8px rgba(179,108,255,0.3);
+  box-shadow: 0 0 10px rgba(179,108,255,0.3);
+}
+
+.card-row {
+  display: flex;
+  gap: 10px;
 }
 
 /* ==============================================
    🧾 BOLETO
    ============================================== */
 .boleto-section {
-  background-color: var(--cinza);
+  background: var(--cinza);
   padding: 25px;
   border-radius: 12px;
   text-align: center;
-  border: 1px solid rgba(255,255,255,0.05);
 }
 
 .boleto-section h3 {
   color: var(--roxo-neon);
-  margin-bottom: 12px;
-}
-
-.boleto-section p {
-  color: var(--muted);
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .boleto-btn {
-  background-color: var(--roxo);
-  color: var(--branco);
+  background: linear-gradient(90deg, var(--roxo), var(--roxo-neon));
   border: none;
-  padding: 12px 20px;
+  color: var(--branco);
+  padding: 12px 18px;
   border-radius: 10px;
-  cursor: pointer;
   font-weight: 600;
-  transition: all 0.3s ease;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
 .boleto-btn:hover {
-  background-color: var(--roxo-neon);
   transform: scale(1.05);
 }
 
@@ -162,41 +265,79 @@
    💸 PIX
    ============================================== */
 .pix-section {
-  background-color: var(--cinza);
+  background: var(--cinza);
   padding: 25px;
   border-radius: 12px;
   text-align: center;
 }
 
-.pix-section h3 {
-  color: var(--roxo-neon);
-  margin-bottom: 15px;
-}
-
 .pix-code {
-  background-color: var(--cinza-escuro);
-  padding: 14px;
-  border-radius: 8px;
-  font-family: monospace;
+  background: var(--cinza-escuro);
   color: var(--branco);
-  margin-bottom: 15px;
+  font-family: monospace;
+  border-radius: 8px;
+  padding: 12px;
   word-wrap: break-word;
-  border: 1px solid rgba(255,255,255,0.05);
+  margin-bottom: 15px;
 }
 
 .copy-btn {
-  background-color: transparent;
   border: 1px solid var(--roxo);
+  background: transparent;
   color: var(--roxo);
-  border-radius: 8px;
   padding: 8px 14px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: 0.3s;
 }
 
 .copy-btn:hover {
-  background-color: var(--roxo);
+  background: var(--roxo);
   color: var(--branco);
+}
+
+/* ==============================================
+   🛒 PRODUTOS E RESUMO
+   ============================================== */
+.checkout-products {
+  background: var(--cinza);
+  padding: 25px;
+  border-radius: 14px;
+}
+
+.checkout-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--cinza-escuro);
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.checkout-item img {
+  width: 65px;
+  height: 65px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.checkout-item p {
+  font-weight: 500;
+}
+
+.summary-details {
+  display: flex;
+  justify-content: space-between;
+  background: var(--cinza-escuro);
+  border-radius: 10px;
+  padding: 15px 20px;
+  margin-top: 20px;
+}
+
+.summary-details span:last-child {
+  color: var(--roxo-neon);
+  font-weight: bold;
 }
 
 /* ==============================================
@@ -204,21 +345,20 @@
    ============================================== */
 .finalize-btn {
   width: 100%;
-  background: linear-gradient(90deg, var(--roxo) 0%, var(--roxo-neon) 100%);
+  background: linear-gradient(90deg, var(--roxo), var(--roxo-neon));
+  color: var(--branco);
   border: none;
   padding: 15px;
-  font-size: 1.1rem;
-  color: var(--branco);
-  font-weight: bold;
   border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 15px;
+  transition: 0.3s ease;
 }
 
 .finalize-btn:hover {
-  box-shadow: 0 0 20px rgba(179,108,255,0.6);
   transform: scale(1.02);
+  box-shadow: 0 0 20px rgba(179,108,255,0.6);
 }
 
 /* ==============================================
@@ -226,122 +366,16 @@
    ============================================== */
 @media (max-width: 768px) {
   .checkout-container {
-    padding: 20px;
+    padding: 25px;
   }
 
   .payment-methods {
     flex-direction: column;
-    gap: 10px;
   }
 
-  .payment-method {
-    margin: 5px 0;
-  }
-}
-/* ===========================================
-   🛒 CHECKOUT - LISTA DE PRODUTOS
-   =========================================== */
-
-.checkout-products {
-  background-color: var(--cinza-escuro);
-  border-radius: 14px;
-  padding: 25px;
-  margin: 20px auto;
-  width: 100%;
-  max-width: 700px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-  color: var(--branco);
-}
-
-.checkout-products h3 {
-  font-size: 1.4rem;
-  margin-bottom: 20px;
-  color: var(--roxo-neon);
-  border-bottom: 2px solid var(--roxo);
-  display: inline-block;
-  padding-bottom: 5px;
-}
-
-/* Cada item */
-.checkout-item {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 16px;
-  background-color: var(--cinza);
-  padding: 12px 16px;
-  border-radius: 10px;
-  margin-bottom: 12px;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.checkout-item:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 0 14px rgba(138, 43, 226, 0.25);
-}
-
-/* Imagem do produto */
-.checkout-item img {
-  width: 65px;
-  height: 65px;
-  object-fit: cover;
-  border-radius: 10px;
-  background-color: var(--preto);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-/* Informações do produto */
-.checkout-item div {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.checkout-item p {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--branco);
-}
-
-.checkout-item span {
-  font-size: 0.95rem;
-  color: var(--muted);
-  margin-top: 4px;
-}
-
-/* ===========================================
-   💰 RESUMO DO TOTAL
-   =========================================== */
-
-.summary-details {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: var(--cinza);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 15px 20px;
-  margin-top: 25px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--branco);
-}
-
-.summary-details span:first-child {
-  color: var(--muted);
-  font-weight: 500;
-}
-
-.summary-details span:last-child {
-  color: var(--roxo-neon);
-  font-size: 1.2rem;
-}
-
-/* Responsivo */
-@media (max-width: 600px) {
-  .checkout-products {
-    padding: 20px;
+  .credit-card {
+    width: 300px;
+    height: 190px;
   }
 
   .checkout-item {
@@ -349,14 +383,8 @@
     align-items: flex-start;
   }
 
-  .checkout-item img {
-    width: 80px;
-    height: 80px;
-  }
-
   .summary-details {
     flex-direction: column;
-    align-items: flex-start;
     gap: 8px;
   }
 }

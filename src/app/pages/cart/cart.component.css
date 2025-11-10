@@ -195,3 +195,99 @@
   width: auto;
   padding: 0.8rem 1.2rem;
 }
+/* ==============================================
+   🛒 AJUSTE DE RESPONSIVIDADE DO CARRINHO
+   ============================================== */
+
+/* Responsividade até 900px */
+@media (max-width: 900px) {
+  .cart-container {
+    padding: 1.5rem;
+  }
+
+  .cart-item {
+    flex-wrap: wrap; /* 🔧 permite quebra natural */
+    justify-content: center;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .cart-item img {
+    width: 70px;
+    height: 70px;
+  }
+
+  .cart-item-info {
+    margin: 0.8rem 0;
+  }
+
+  .cart-item-price {
+    margin: 0.5rem 0;
+  }
+
+  .remove-btn {
+    margin-top: 0.6rem;
+  }
+}
+
+/* Responsividade até 600px */
+@media (max-width: 600px) {
+  .cart-page {
+    padding: 1rem;
+  }
+
+  .cart-container {
+    padding: 1.2rem;
+  }
+
+  .cart-item {
+    flex-direction: column; /* 🔧 empilha tudo */
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .cart-item-info h3 {
+    font-size: 1rem;
+  }
+
+  .cart-item-info p {
+    font-size: 0.85rem;
+  }
+
+  .cart-item-price {
+    font-size: 0.95rem;
+  }
+
+  .remove-btn {
+    width: 100%; /* 🔧 ocupa toda a largura */
+    max-width: 250px;
+    padding: 0.5rem 1rem;
+    text-align: center;
+  }
+
+  .cart-actions {
+    flex-direction: column;
+  }
+
+  .cart-btn {
+    width: 100%;
+  }
+}
+
+/* Responsividade até 400px */
+@media (max-width: 400px) {
+  .cart-item img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .remove-btn {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .cart-item-info h3 {
+    font-size: 0.95rem;
+  }
+}
+
