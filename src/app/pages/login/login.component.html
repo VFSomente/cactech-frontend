@@ -69,16 +69,20 @@
     <h2>{{ isLogin ? 'Bem-vindo de volta!' : 'Crie sua conta' }}</h2>
 
     <form *ngIf="isLogin" (ngSubmit)="login()">
-      <input type="email" placeholder="E-mail" [(ngModel)]="loginEmail" name="loginEmail" required />
+      <input type="text" placeholder="Usuário" [(ngModel)]="loginUsername" name="loginUsername" required />
       <input type="password" placeholder="Senha" [(ngModel)]="loginPassword" name="loginPassword" required />
-      <button type="submit" class="btn-neon">Entrar</button>
+      <button type="submit" class="btn-neon" [disabled]="loading">Entrar</button>
     </form>
 
     <form *ngIf="!isLogin" (ngSubmit)="register()">
       <input type="text" placeholder="Nome completo" [(ngModel)]="registerName" name="registerName" required />
+      <input type="text" placeholder="Usuário" [(ngModel)]="registerUsername" name="registerUsername" required />
       <input type="email" placeholder="E-mail" [(ngModel)]="registerEmail" name="registerEmail" required />
+      <input type="text" placeholder="Telefone" [(ngModel)]="registerPhone" name="registerPhone" />
       <input type="password" placeholder="Senha" [(ngModel)]="registerPassword" name="registerPassword" required />
-      <button type="submit" class="btn-neon">Cadastrar</button>
+      <button type="submit" class="btn-neon" [disabled]="loading">Cadastrar</button>
     </form>
+
+    <p *ngIf="errorMessage" style="color: #ff6b6b; margin-top: 12px;">{{ errorMessage }}</p>
   </div>
 </div>

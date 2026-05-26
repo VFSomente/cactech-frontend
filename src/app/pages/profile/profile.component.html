@@ -1,0 +1,55 @@
+<section class="profile-page">
+  <div class="profile-card">
+    <div class="profile-header">
+      <h1>Meu Perfil</h1>
+      <button type="button" class="back-btn" (click)="backHome()">Voltar</button>
+    </div>
+
+    <p *ngIf="loading" class="muted">Carregando perfil...</p>
+    <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+    <p *ngIf="message" class="success">{{ message }}</p>
+
+    <div class="profile-body" *ngIf="!loading">
+      <div class="avatar-block">
+        <img
+          [src]="avatarPreview || 'https://via.placeholder.com/140x140?text=Avatar'"
+          alt="Avatar do usuário"
+          class="avatar-image"
+        />
+        <label class="upload-btn">
+          Trocar avatar
+          <input type="file" accept="image/*" (change)="onAvatarSelected($event)" />
+        </label>
+        <small *ngIf="uploadingAvatar" class="muted">Enviando avatar...</small>
+      </div>
+
+      <form class="profile-form" (ngSubmit)="saveProfile()">
+        <div class="form-grid">
+          <label>
+            Nome
+            <input type="text" [(ngModel)]="profile.nome" name="nome" />
+          </label>
+          <label>
+            Username
+            <input type="text" [value]="profile.username" disabled />
+          </label>
+          <label>
+            Email
+            <input type="email" [value]="profile.email" disabled />
+          </label>
+          <label>
+            Telefone
+            <input type="text" [(ngModel)]="profile.telefone" name="telefone" />
+          </label>
+          <label class="full">
+            Endereço
+            <input type="text" [(ngModel)]="profile.endereco" name="endereco" />
+          </label>
+        </div>
+        <button type="submit" class="save-btn" [disabled]="saving">
+          {{ saving ? 'Salvando...' : 'Salvar alterações' }}
+        </button>
+      </form>
+    </div>
+  </div>
+</section>

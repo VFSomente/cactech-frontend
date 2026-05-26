@@ -3,6 +3,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CartService } from '../services/cart/cart.service';
 import { ToastService } from '../services/toast/toast.service';
+import { AuthService } from '../services/auth/auth.service';
+import { UserProfile, UserService } from '../services/user/user.service';
 @Component({
   selector: 'app-main',
   standalone: true,
@@ -11,10 +13,18 @@ templateUrl: './main.component.html',
   styleUrls: ['./main.component.css']
 })
 export class MainComponent {
-  constructor(private router: Router, private cartService: CartService, private toastService: ToastService) {}
+  constructor(
+    private router: Router,
+    private cartService: CartService,
+    private toastService: ToastService,
+    private authService: AuthService,
+    private userService: UserService
+  ) {}
 
     cartCount = 0;
     favorites: any[] = [];
+    currentUser: UserProfile | null = null;
+    dropdownOpen = false;
 
     ngOnInit(): void {
     // LÓGICA CARRINHO ESCUTA ADIÇÕES AO CARRINHO // LÓGICA FAVORITOS ESCUTA ADIÇÕES AOS FAVORITOS
@@ -22,6 +32,10 @@ export class MainComponent {
     this.cartService.cartCount$.subscribe(count => {
       this.cartCount = count;
     });
+    this.userService.currentUser$.subscribe((user) => {
+      this.currentUser = user;
+    });
+    this.userService.refreshMeIfToken(this.authService.getToken());
   }
     countProduct(productId: number) {
     const product = this.Products.find(p => p.id === productId);
@@ -74,6 +88,29 @@ export class MainComponent {
     // LÓGICA NAVEGAÇÃO PELO MENU INICIAL DO SITE 
   navigateToLogin() {
     this.router.navigate(['/login']);
+  }
+  navigateToProfile() {
+    this.dropdownOpen = false;
+    this.router.navigate(['/profile']);
+  }
+  toggleUserMenu() {
+    this.dropdownOpen = !this.dropdownOpen;
+  }
+  logout() {
+    this.authService.clearToken();
+    this.userService.clearCurrentUser();
+    this.dropdownOpen = false;
+    this.router.navigate(['/']);
+  }
+  get userDisplayName(): string {
+    if (!this.currentUser) return '';
+    return this.currentUser.nome || this.currentUser.nomeCompleto || this.currentUser.username || 'Conta';
+  }
+  get userAvatar(): string {
+    return this.currentUser?.avatarUrl || '';
+  }
+  get isLoggedIn(): boolean {
+    return !!this.authService.getToken();
   }
   navigateToFavorites() {
     this.router.navigate(['/favorites']);

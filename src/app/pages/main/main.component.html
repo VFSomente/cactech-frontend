@@ -22,10 +22,22 @@
     </div>
 
     <div class="navbar-right">
-      <a class="account" (click)="navigateToLogin()" title="Minha Conta">
+      <a *ngIf="!isLoggedIn" class="account" (click)="navigateToLogin()" title="Minha Conta">
         <i class="fas fa-user-circle"></i>
         <span>Entrar</span>
       </a>
+      <div *ngIf="isLoggedIn" class="user-menu">
+        <button type="button" class="user-menu-trigger" (click)="toggleUserMenu()" title="Minha conta">
+          <img *ngIf="userAvatar" [src]="userAvatar" alt="Avatar" class="user-avatar" />
+          <i *ngIf="!userAvatar" class="fas fa-user-circle"></i>
+          <span>{{ userDisplayName }}</span>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div *ngIf="dropdownOpen" class="user-dropdown">
+          <button type="button" (click)="navigateToProfile()">Meu Perfil</button>
+          <button type="button" (click)="logout()">Sair</button>
+        </div>
+      </div>
 
       <a (click)="navigateToFavorites()" class="wishlist" title="Favoritos">
         <i class="fas fa-heart"></i>
