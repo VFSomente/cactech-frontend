@@ -1,5 +1,18 @@
 <div class="container page">
-  @if (product; as p) {
+  @if (loading) {
+    <div class="product" aria-busy="true">
+      <div class="skeleton gallery-skeleton"></div>
+      <div class="skeleton"></div>
+    </div>
+  } @else if (loadError) {
+    <div class="empty-state panel">
+      <span class="empty-icon"><i class="fa-solid fa-plug-circle-xmark"></i></span>
+      <h2>Não foi possível carregar o produto</h2>
+      <p>O servidor da loja não respondeu. Verifique sua conexão e tente novamente.</p>
+      <a routerLink="/" class="btn btn-primary">Voltar à loja</a>
+    </div>
+  } @else if (product) {
+    @let p = product;
     <nav class="breadcrumb" aria-label="Você está em">
       <a routerLink="/">Início</a>
       <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>

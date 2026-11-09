@@ -21,19 +21,21 @@
               </div>
             </div>
 
-            <a
-              class="hero-product"
-              [routerLink]="['/product', slide.product.id]"
-              [attr.tabindex]="i === currentSlide ? 0 : -1"
-            >
-              <div class="hero-product-media">
-                <img [src]="slide.product.image" [alt]="slide.product.name" />
-              </div>
-              <div class="hero-product-info">
-                <span>{{ slide.product.name }}</span>
-                <strong>{{ slide.product.price | currency }}</strong>
-              </div>
-            </a>
+            @if (slide.product; as hp) {
+              <a
+                class="hero-product"
+                [routerLink]="['/product', hp.id]"
+                [attr.tabindex]="i === currentSlide ? 0 : -1"
+              >
+                <div class="hero-product-media">
+                  <img [src]="hp.image" [alt]="hp.name" />
+                </div>
+                <div class="hero-product-info">
+                  <span>{{ hp.name }}</span>
+                  <strong>{{ hp.price | currency }}</strong>
+                </div>
+              </a>
+            }
           </article>
         }
       </div>
@@ -88,7 +90,10 @@
           <span class="dept-icon"><i [class]="dep.icon"></i></span>
           <strong>{{ dep.label }}</strong>
           <span class="muted">{{ dep.description }}</span>
-          <span class="dept-count">{{ countIn(dep.slug) }} produtos <i class="fa-solid fa-arrow-right"></i></span>
+          <span class="dept-count">
+            @if (departmentCounts[dep.slug]; as count) { {{ count }} produtos } @else { Ver produtos }
+            <i class="fa-solid fa-arrow-right"></i>
+          </span>
         </a>
       }
     </div>
@@ -112,7 +117,11 @@
       }
       <h2>{{ listingTitle }}</h2>
       <p class="muted">
-        {{ products.length }} {{ products.length === 1 ? 'produto encontrado' : 'produtos encontrados' }}
+        @if (loading) {
+          Carregando produtos...
+        } @else {
+          {{ products.length }} {{ products.length === 1 ? 'produto encontrado' : 'produtos encontrados' }}
+        }
         @if (isFiltered) {
           · <a routerLink="/" class="link">Limpar filtros</a>
         }
@@ -129,7 +138,20 @@
     </label>
   </div>
 
-  @if (products.length) {
+  @if (loading) {
+    <div class="product-grid" aria-busy="true">
+      @for (n of [1, 2, 3, 4, 5, 6, 7, 8]; track n) {
+        <div class="skeleton"></div>
+      }
+    </div>
+  } @else if (loadError) {
+    <div class="empty-state panel">
+      <span class="empty-icon"><i class="fa-solid fa-plug-circle-xmark"></i></span>
+      <h2>Não foi possível carregar os produtos</h2>
+      <p>O servidor da loja não respondeu. Verifique sua conexão e tente novamente.</p>
+      <button type="button" class="btn btn-primary" (click)="retry()">Tentar novamente</button>
+    </div>
+  } @else if (products.length) {
     <div class="product-grid">
       @for (product of products; track product.id) {
         <app-product-card

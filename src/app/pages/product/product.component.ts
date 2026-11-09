@@ -1,6 +1,7 @@
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { catchError, of, switchMap, tap } from 'rxjs';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CartService } from '../services/cart/cart.service';
 import { ToastService } from '../services/toast/toast.service';
@@ -28,17 +29,40 @@ export class ProductComponent implements OnInit {
   department: Department | undefined;
   related: Product[] = [];
   favoriteIds = new Set<number>();
+  loading = true;
+  loadError = false;
 
   readonly pixDiscount = 0.1;
 
   ngOnInit(): void {
     // paramMap (e não snapshot) para atualizar ao navegar entre produtos relacionados
-    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
-      this.productId = Number(params.get('id'));
-      this.product = this.productService.getById(this.productId);
-      this.department = this.productService.getDepartment(this.product?.department);
-      this.related = this.product ? this.productService.related(this.product) : [];
-    });
+    this.route.paramMap
+      .pipe(
+        tap((params) => {
+          this.productId = Number(params.get('id'));
+          this.loading = true;
+          this.loadError = false;
+          this.related = [];
+        }),
+        switchMap(() =>
+          this.productService.getById(this.productId).pipe(
+            catchError(() => {
+              this.loadError = true;
+              return of(undefined);
+            })
+          )
+        ),
+        tap((product) => {
+          this.product = product;
+          this.department = this.productService.getDepartment(product?.department);
+          this.loading = false;
+        }),
+        switchMap((product) =>
+          product ? this.productService.related(product).pipe(catchError(() => of([] as Product[]))) : of([] as Product[])
+        ),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((related) => (this.related = related));
 
     this.favoritesService.favorites$
       .pipe(takeUntilDestroyed(this.destroyRef))

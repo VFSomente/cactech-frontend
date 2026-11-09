@@ -2,13 +2,19 @@ import { Component, DestroyRef, OnDestroy, OnInit, inject } from '@angular/core'
 import { CurrencyPipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { BehaviorSubject, catchError, combineLatest, of, switchMap, tap } from 'rxjs';
 import { CartService } from '../services/cart/cart.service';
 import { ToastService } from '../services/toast/toast.service';
 import { FavoritesService } from '../services/favorites/favorites.service';
-import { DEPARTMENTS, Department, DepartmentSlug, Product, ProductService } from '../services/product/product.service';
+import {
+  DEPARTMENTS,
+  Department,
+  DepartmentSlug,
+  Product,
+  ProductService,
+  ProductSort
+} from '../services/product/product.service';
 import { ProductCardComponent } from '../../components/product-card/product-card.component';
-
-type SortOption = 'relevance' | 'price-asc' | 'price-desc';
 
 interface HeroSlide {
   eyebrow: string;
@@ -16,7 +22,9 @@ interface HeroSlide {
   text: string;
   cta: string;
   department: DepartmentSlug;
-  product: Product;
+  /** Categoria usada para escolher o produto em destaque (o mais caro dela). */
+  category?: string;
+  product?: Product;
 }
 
 @Component({
@@ -39,9 +47,13 @@ export class MainComponent implements OnInit, OnDestroy {
   // ---------- Vitrine ----------
   query = '';
   department: Department | undefined;
-  sort: SortOption = 'relevance';
+  sort: ProductSort = 'relevance';
+  private sort$ = new BehaviorSubject<ProductSort>('relevance');
   products: Product[] = [];
+  loading = true;
+  loadError = false;
   favoriteIds = new Set<number>();
+  departmentCounts: Partial<Record<DepartmentSlug, number>> = {};
 
   get isFiltered(): boolean {
     return !!this.query || !!this.department;
@@ -53,14 +65,13 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   // ---------- Banner ----------
-  readonly slides: HeroSlide[] = [
+  slides: HeroSlide[] = [
     {
       eyebrow: 'Computadores',
       title: 'PCs gamer montados e prontos para jogar',
       text: 'Configurações com AMD Ryzen, Intel Core e placas GeForce RTX para todos os orçamentos.',
       cta: 'Ver computadores',
-      department: 'computadores',
-      product: this.productService.getById(26)!
+      department: 'computadores'
     },
     {
       eyebrow: 'Hardware',
@@ -68,26 +79,52 @@ export class MainComponent implements OnInit, OnDestroy {
       text: 'Placas de vídeo, processadores, memórias e fontes das principais marcas.',
       cta: 'Ver hardware',
       department: 'hardware',
-      product: this.productService.getById(12)!
+      category: 'Placa de vídeo'
     },
     {
       eyebrow: 'Monitores',
       title: 'Imagem rápida, fluida e sem borrões',
       text: 'Monitores gamer de 21" a 49", com taxas de atualização de 100 Hz a 310 Hz.',
       cta: 'Ver monitores',
-      department: 'monitores',
-      product: this.productService.getById(16)!
+      department: 'monitores'
     }
   ];
   currentSlide = 0;
   private sliderTimer?: ReturnType<typeof setInterval>;
 
   ngOnInit(): void {
-    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
-      this.query = (params.get('q') ?? '').trim();
-      this.department = this.productService.getDepartment(params.get('dep'));
-      this.applyFilters();
-    });
+    // Lista da vitrine: reage à URL (?q= / ?dep=) e à ordenação
+    combineLatest([this.route.queryParamMap, this.sort$])
+      .pipe(
+        tap(([params]) => {
+          this.query = (params.get('q') ?? '').trim();
+          this.department = this.productService.getDepartment(params.get('dep'));
+          this.loading = true;
+          this.loadError = false;
+        }),
+        switchMap(([, sort]) =>
+          this.productService.search(this.query, this.department?.slug, sort).pipe(
+            catchError(() => {
+              this.loadError = true;
+              return of([] as Product[]);
+            })
+          )
+        ),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((list) => {
+        this.products = list;
+        this.loading = false;
+      });
+
+    // Catálogo completo: destaques do banner e contagem por departamento
+    this.productService
+      .getAll()
+      .pipe(
+        catchError(() => of([] as Product[])),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((all) => this.buildHighlights(all));
 
     this.favoritesService.favorites$
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -100,13 +137,13 @@ export class MainComponent implements OnInit, OnDestroy {
     this.stopSlider();
   }
 
-  countIn(slug: DepartmentSlug): number {
-    return this.productService.countByDepartment(slug);
+  onSortChange(value: string): void {
+    this.sort = value as ProductSort;
+    this.sort$.next(this.sort);
   }
 
-  onSortChange(value: string): void {
-    this.sort = value as SortOption;
-    this.applyFilters();
+  retry(): void {
+    this.sort$.next(this.sort);
   }
 
   addToCart(product: Product): void {
@@ -124,11 +161,19 @@ export class MainComponent implements OnInit, OnDestroy {
     this.startSlider(); // reinicia a contagem após clique manual
   }
 
-  private applyFilters(): void {
-    const list = [...this.productService.search(this.query, this.department?.slug)];
-    if (this.sort === 'price-asc') list.sort((a, b) => a.price - b.price);
-    if (this.sort === 'price-desc') list.sort((a, b) => b.price - a.price);
-    this.products = list;
+  private buildHighlights(all: Product[]): void {
+    this.departmentCounts = {};
+    for (const p of all) {
+      this.departmentCounts[p.department] = (this.departmentCounts[p.department] ?? 0) + 1;
+    }
+
+    this.slides = this.slides.map((slide) => {
+      const candidates = all.filter(
+        (p) => p.department === slide.department && (!slide.category || p.category === slide.category)
+      );
+      const product = candidates.reduce<Product | undefined>((best, p) => (!best || p.price > best.price ? p : best), undefined);
+      return { ...slide, product };
+    });
   }
 
   private startSlider(): void {

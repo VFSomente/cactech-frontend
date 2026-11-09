@@ -7,7 +7,8 @@ import { Product } from '../product/product.service';
   providedIn: 'root'
 })
 export class FavoritesService {
-  private readonly storageKey = 'favorites';
+  // Chave nova: os ids mudaram quando o catálogo passou a vir da API
+  private readonly storageKey = 'cactech:favorites';
   private readonly subject = new BehaviorSubject<Product[]>(this.read());
   readonly favorites$ = this.subject.asObservable();
 
@@ -39,6 +40,7 @@ export class FavoritesService {
   }
 
   private read(): Product[] {
+    localStorage.removeItem('favorites'); // formato antigo (ids 0–27)
     try {
       const stored = JSON.parse(localStorage.getItem(this.storageKey) || '[]');
       return Array.isArray(stored) ? stored : [];

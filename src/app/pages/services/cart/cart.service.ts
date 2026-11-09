@@ -14,9 +14,13 @@ export class CartService {
   private cartItemsSubject = new BehaviorSubject<Product[]>([]);
   cartItems$ = this.cartItemsSubject.asObservable();
 
+  // Chave nova: os ids mudaram quando o catálogo passou a vir da API
+  private readonly storageKey = 'cactech:cart';
+
   constructor() {
+    localStorage.removeItem('cart'); // formato antigo (ids 0–27)
     try {
-      const saved = JSON.parse(localStorage.getItem('cart') || '[]');
+      const saved = JSON.parse(localStorage.getItem(this.storageKey) || '[]');
       this.cart = Array.isArray(saved) ? saved : [];
     } catch {
       this.cart = [];
@@ -55,7 +59,7 @@ export class CartService {
   }
 
   private updateCartState(): void {
-    localStorage.setItem('cart', JSON.stringify(this.cart));
+    localStorage.setItem(this.storageKey, JSON.stringify(this.cart));
     this.cartCount.next(this.cart.length);
     this.cartItemsSubject.next([...this.cart]);
   }

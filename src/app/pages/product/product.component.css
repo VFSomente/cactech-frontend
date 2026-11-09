@@ -16,6 +16,10 @@
   border-radius: 24px;
 }
 
+.gallery-skeleton {
+  aspect-ratio: 1 / 1;
+}
+
 .gallery img {
   max-height: 100%;
   object-fit: contain;
