@@ -29,13 +29,9 @@
   gap: 16px;
 }
 
-.label-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-}
-
 .forgot {
+  align-self: flex-end;
+  margin-top: 2px;
   font-size: 0.82rem;
   font-weight: 600;
   color: var(--accent);
