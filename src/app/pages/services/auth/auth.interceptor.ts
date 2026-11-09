@@ -5,11 +5,16 @@ import { catchError, throwError } from 'rxjs';
 import { AuthService } from './auth.service';
 import { UserService } from '../user/user.service';
 import { ToastService } from '../toast/toast.service';
+import { environment } from '../../../../environments/environment';
 
 /** Rotas públicas de autenticação: não levam token. (/auth/me precisa do token!) */
 const PUBLIC_AUTH_ENDPOINTS = ['/auth/login', '/auth/register', '/auth/esqueci-senha', '/auth/redefinir-senha'];
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  // O token só vai para a API da CacTech — nunca para serviços externos (ex.: ViaCEP)
+  if (!req.url.startsWith(environment.apiUrl)) {
+    return next(req);
+  }
   if (PUBLIC_AUTH_ENDPOINTS.some((path) => req.url.includes(path))) {
     return next(req);
   }

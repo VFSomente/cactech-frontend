@@ -86,6 +86,46 @@
   grid-column: 1 / -1;
 }
 
+.section-title {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.address {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.span-2 {
+  grid-column: span 2;
+}
+
+.cep-input {
+  position: relative;
+}
+
+.cep-input i {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--accent);
+}
+
+.hint {
+  font-size: 0.78rem;
+  color: var(--danger);
+}
+
+.hint.muted {
+  color: var(--text-subtle);
+}
+
+.optional {
+  color: var(--text-subtle);
+  font-weight: 400;
+}
+
 .actions {
   display: flex;
   justify-content: flex-end;
@@ -96,7 +136,12 @@
 
 @media (max-width: 860px) {
   .profile-layout,
-  .grid {
+  .grid,
+  .address {
     grid-template-columns: 1fr;
+  }
+
+  .span-2 {
+    grid-column: auto;
   }
 }

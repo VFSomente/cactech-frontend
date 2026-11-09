@@ -21,8 +21,8 @@
             <span>{{ initials }}</span>
           }
         </div>
-        <strong>{{ profile.nome || profile.username }}</strong>
-        <span class="muted">{{ profile.email }}</span>
+        <strong>{{ displayName }}</strong>
+        <span class="muted">{{ user.email }}</span>
 
         <label class="btn btn-outline btn-sm upload">
           @if (uploadingAvatar) {
@@ -34,55 +34,104 @@
         </label>
       </aside>
 
-      <section class="panel form-panel">
-        <h2>Dados pessoais</h2>
-
+      <form class="panel form-panel" (ngSubmit)="saveProfile()">
         @if (errorMessage) {
           <div class="alert alert-error" role="alert"><i class="fa-solid fa-circle-exclamation"></i> {{ errorMessage }}</div>
         }
-        @if (message) {
-          <div class="alert alert-success" role="status"><i class="fa-solid fa-circle-check"></i> {{ message }}</div>
-        }
 
-        <form (ngSubmit)="saveProfile()">
-          <div class="grid">
-            <div class="field full">
-              <label for="nome">Nome completo</label>
-              <input id="nome" class="input" type="text" autocomplete="name" [(ngModel)]="profile.nome" name="nome" />
-            </div>
-            <div class="field">
-              <label for="username">Usuário</label>
-              <input id="username" class="input" type="text" [value]="profile.username" disabled />
-            </div>
-            <div class="field">
-              <label for="email">E-mail</label>
-              <input id="email" class="input" type="email" [value]="profile.email" disabled />
-            </div>
-            <div class="field">
-              <label for="telefone">Telefone</label>
-              <input id="telefone" class="input" type="tel" autocomplete="tel" placeholder="(83) 90000-0000" [(ngModel)]="profile.telefone" name="telefone" />
-            </div>
-            <div class="field full">
-              <label for="endereco">Endereço de entrega</label>
+        <h2>Dados pessoais</h2>
+        <div class="grid">
+          <div class="field full">
+            <label for="nomeCompleto">Nome completo</label>
+            <input id="nomeCompleto" class="input" type="text" autocomplete="name" [(ngModel)]="form.nomeCompleto" name="nomeCompleto" required />
+          </div>
+          <div class="field">
+            <label for="username">Usuário</label>
+            <input id="username" class="input" type="text" [value]="user.username" disabled />
+          </div>
+          <div class="field">
+            <label for="email">E-mail</label>
+            <input id="email" class="input" type="email" [value]="user.email" disabled />
+          </div>
+          <div class="field">
+            <label for="telefone">Telefone</label>
+            <input
+              id="telefone"
+              class="input"
+              type="tel"
+              inputmode="numeric"
+              autocomplete="tel"
+              placeholder="(83) 90000-0000"
+              [ngModel]="form.telefone"
+              (ngModelChange)="onPhoneInput($event)"
+              name="telefone"
+            />
+          </div>
+        </div>
+
+        <h2 class="section-title">Endereço de entrega</h2>
+        <div class="grid address">
+          <div class="field cep">
+            <label for="cep">CEP</label>
+            <div class="cep-input">
               <input
-                id="endereco"
+                id="cep"
                 class="input"
                 type="text"
-                autocomplete="street-address"
-                placeholder="Rua, número, bairro, cidade"
-                [(ngModel)]="profile.endereco"
-                name="endereco"
+                inputmode="numeric"
+                autocomplete="postal-code"
+                placeholder="00000-000"
+                [ngModel]="form.cep"
+                (ngModelChange)="onCepInput($event)"
+                name="cep"
               />
+              @if (searchingCep) {
+                <i class="fa-solid fa-circle-notch fa-spin"></i>
+              }
             </div>
+            @if (cepMessage) {
+              <small class="hint">{{ cepMessage }}</small>
+            } @else {
+              <small class="hint muted">Digite o CEP para preencher o endereço.</small>
+            }
           </div>
+          <div class="field span-2">
+            <label for="rua">Rua</label>
+            <input id="rua" class="input" type="text" autocomplete="address-line1" [(ngModel)]="form.rua" name="rua" />
+          </div>
+          <div class="field">
+            <label for="numero">Número</label>
+            <input id="numero" class="input" type="text" [(ngModel)]="form.numero" name="numero" />
+          </div>
+          <div class="field span-2">
+            <label for="complemento">Complemento <span class="optional">(opcional)</span></label>
+            <input id="complemento" class="input" type="text" placeholder="Apto, bloco, referência" [(ngModel)]="form.complemento" name="complemento" />
+          </div>
+          <div class="field">
+            <label for="bairro">Bairro</label>
+            <input id="bairro" class="input" type="text" [(ngModel)]="form.bairro" name="bairro" />
+          </div>
+          <div class="field">
+            <label for="cidade">Cidade</label>
+            <input id="cidade" class="input" type="text" autocomplete="address-level2" [(ngModel)]="form.cidade" name="cidade" />
+          </div>
+          <div class="field">
+            <label for="estado">Estado</label>
+            <select id="estado" class="select" [(ngModel)]="form.estado" name="estado">
+              <option value="">Selecione</option>
+              @for (uf of ufs; track uf) {
+                <option [value]="uf">{{ uf }}</option>
+              }
+            </select>
+          </div>
+        </div>
 
-          <div class="actions">
-            <button type="submit" class="btn btn-primary" [disabled]="saving">
-              @if (saving) { <i class="fa-solid fa-circle-notch fa-spin"></i> Salvando... } @else { Salvar alterações }
-            </button>
-          </div>
-        </form>
-      </section>
+        <div class="actions">
+          <button type="submit" class="btn btn-primary" [disabled]="saving">
+            @if (saving) { <i class="fa-solid fa-circle-notch fa-spin"></i> Salvando... } @else { Salvar alterações }
+          </button>
+        </div>
+      </form>
     </div>
   }
 </div>

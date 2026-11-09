@@ -1,8 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { UserProfile, UserService } from '../services/user/user.service';
+import { UpdateProfileRequest, UserProfile, UserService } from '../services/user/user.service';
 import { AuthService } from '../services/auth/auth.service';
+import { ToastService } from '../services/toast/toast.service';
+
+interface ViaCepResponse {
+  logradouro?: string;
+  bairro?: string;
+  localidade?: string;
+  uf?: string;
+  erro?: boolean | string;
+}
+
+const UFS = [
+  'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA',
+  'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
+];
 
 @Component({
   selector: 'app-profile',
@@ -12,32 +27,31 @@ import { AuthService } from '../services/auth/auth.service';
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent implements OnInit {
+  private userService = inject(UserService);
+  private authService = inject(AuthService);
+  private toastService = inject(ToastService);
+  private router = inject(Router);
+  private http = inject(HttpClient);
+
+  readonly ufs = UFS;
+
   loading = false;
   saving = false;
   uploadingAvatar = false;
-  message = '';
+  searchingCep = false;
+  cepMessage = '';
   errorMessage = '';
   avatarPreview = '';
 
-  profile: UserProfile = {
-    nome: '',
-    nomeCompleto: '',
-    username: '',
-    email: '',
-    telefone: '',
-    endereco: '',
-    avatarUrl: ''
-  };
+  user: UserProfile = { username: '', email: '' };
+  form: UpdateProfileRequest = emptyForm();
 
-  constructor(
-    private userService: UserService,
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  get displayName(): string {
+    return this.form.nomeCompleto || this.user.username;
+  }
 
   get initials(): string {
-    const name = (this.profile.nome || this.profile.username || '').trim();
-    const parts = name.split(/\s+/).filter(Boolean);
+    const parts = this.displayName.trim().split(/\s+/).filter(Boolean);
     return ((parts[0]?.[0] ?? '') + (parts.length > 1 ? parts[parts.length - 1][0] : '')).toUpperCase() || '?';
   }
 
@@ -46,18 +60,31 @@ export class ProfileComponent implements OnInit {
     this.userService.getMe().subscribe({
       next: (user) => {
         this.loading = false;
-        this.profile = {
-          ...user,
-          nome: user.nome || user.nomeCompleto || '',
-          nomeCompleto: user.nomeCompleto || user.nome || ''
-        };
-        this.avatarPreview = this.userService.resolveAvatarUrl(user.avatarUrl);
+        this.applyUser(user);
       },
       error: () => {
         this.loading = false;
         this.errorMessage = 'Não foi possível carregar seu perfil.';
       }
     });
+  }
+
+  /** Formata o CEP enquanto digita e busca o endereço ao completar 8 dígitos. */
+  onCepInput(value: string): void {
+    const digits = value.replace(/\D/g, '').slice(0, 8);
+    this.form.cep = digits.length > 5 ? `${digits.slice(0, 5)}-${digits.slice(5)}` : digits;
+    this.cepMessage = '';
+    if (digits.length === 8) {
+      this.lookupCep(digits);
+    }
+  }
+
+  onPhoneInput(value: string): void {
+    const d = value.replace(/\D/g, '').slice(0, 11);
+    let formatted = d;
+    if (d.length > 2) formatted = `(${d.slice(0, 2)}) ${d.slice(2)}`;
+    if (d.length > 7) formatted = `(${d.slice(0, 2)}) ${d.slice(2, d.length - 4)}-${d.slice(d.length - 4)}`;
+    this.form.telefone = formatted;
   }
 
   onAvatarSelected(event: Event): void {
@@ -71,42 +98,42 @@ export class ProfileComponent implements OnInit {
       next: (res) => {
         this.uploadingAvatar = false;
         this.avatarPreview = this.userService.resolveAvatarUrl(res.avatarUrl);
-        this.profile.avatarUrl = this.avatarPreview;
+        this.toastService.show('Foto atualizada.');
       },
       error: () => {
         this.uploadingAvatar = false;
-        this.errorMessage = 'Não foi possível enviar a foto.';
+        this.errorMessage = 'Não foi possível enviar a foto. Use JPG, PNG, GIF ou WEBP de até 2 MB.';
       }
     });
+    input.value = '';
   }
 
   saveProfile(): void {
-    this.saving = true;
-    this.message = '';
     this.errorMessage = '';
+    if (!this.form.nomeCompleto.trim()) {
+      this.errorMessage = 'Informe seu nome completo.';
+      return;
+    }
 
-    const payload: Partial<UserProfile> = {
-      nome: this.profile.nome || this.profile.nomeCompleto || '',
-      telefone: this.profile.telefone || '',
-      endereco: this.profile.endereco || '',
-      avatarUrl: this.profile.avatarUrl || ''
+    this.saving = true;
+    const payload: UpdateProfileRequest = {
+      ...this.form,
+      nomeCompleto: this.form.nomeCompleto.trim(),
+      cep: this.form.cep.replace(/\D/g, '')
     };
 
     this.userService.updateProfile(payload).subscribe({
       next: (user) => {
         this.saving = false;
-        this.profile = {
-          ...this.profile,
-          ...user,
-          nome: user.nome || user.nomeCompleto || this.profile.nome || '',
-          nomeCompleto: user.nomeCompleto || user.nome || this.profile.nomeCompleto || ''
-        };
-        this.avatarPreview = this.userService.resolveAvatarUrl(user.avatarUrl) || this.avatarPreview;
-        this.message = 'Alterações salvas.';
+        this.applyUser(user);
+        this.toastService.show('Alterações salvas.');
       },
-      error: () => {
+      error: (err: HttpErrorResponse) => {
         this.saving = false;
-        this.errorMessage = 'Não foi possível salvar as alterações.';
+        this.errorMessage =
+          err.status === 400 && err.error?.message
+            ? 'Verifique os dados: ' + err.error.message
+            : 'Não foi possível salvar as alterações. Tente novamente.';
       }
     });
   }
@@ -116,4 +143,46 @@ export class ProfileComponent implements OnInit {
     this.userService.clearCurrentUser();
     this.router.navigate(['/']);
   }
+
+  private applyUser(user: UserProfile): void {
+    this.user = user;
+    const cep = (user.cep ?? '').replace(/\D/g, '');
+    this.form = {
+      nomeCompleto: user.nomeCompleto || user.nome || '',
+      telefone: user.telefone ?? '',
+      cep: cep.length === 8 ? `${cep.slice(0, 5)}-${cep.slice(5)}` : cep,
+      rua: user.rua ?? '',
+      numero: user.numero ?? '',
+      complemento: user.complemento ?? '',
+      bairro: user.bairro ?? '',
+      cidade: user.cidade ?? '',
+      estado: user.estado ?? ''
+    };
+    this.avatarPreview = this.userService.resolveAvatarUrl(user.avatarUrl);
+  }
+
+  private lookupCep(cep: string): void {
+    this.searchingCep = true;
+    this.http.get<ViaCepResponse>(`https://viacep.com.br/ws/${cep}/json/`).subscribe({
+      next: (res) => {
+        this.searchingCep = false;
+        if (res.erro) {
+          this.cepMessage = 'CEP não encontrado. Preencha o endereço manualmente.';
+          return;
+        }
+        this.form.rua = res.logradouro || this.form.rua;
+        this.form.bairro = res.bairro || this.form.bairro;
+        this.form.cidade = res.localidade || this.form.cidade;
+        this.form.estado = res.uf || this.form.estado;
+      },
+      error: () => {
+        this.searchingCep = false;
+        this.cepMessage = 'Não foi possível buscar o CEP agora. Preencha o endereço manualmente.';
+      }
+    });
+  }
+}
+
+function emptyForm(): UpdateProfileRequest {
+  return { nomeCompleto: '', telefone: '', cep: '', rua: '', numero: '', complemento: '', bairro: '', cidade: '', estado: '' };
 }

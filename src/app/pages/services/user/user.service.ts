@@ -3,14 +3,35 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 
+/** Dados do usuário como a API devolve (GET /auth/me). */
 export interface UserProfile {
+  id?: number;
   nome?: string;
   nomeCompleto?: string;
   username: string;
   email: string;
-  telefone?: string;
-  endereco?: string;
+  telefone?: string | null;
+  cep?: string | null;
+  rua?: string | null;
+  numero?: string | null;
+  complemento?: string | null;
+  bairro?: string | null;
+  cidade?: string | null;
+  estado?: string | null;
   avatarUrl?: string;
+}
+
+/** Corpo aceito por PUT /usuarios/perfil. */
+export interface UpdateProfileRequest {
+  nomeCompleto: string;
+  telefone: string;
+  cep: string;
+  rua: string;
+  numero: string;
+  complemento: string;
+  bairro: string;
+  cidade: string;
+  estado: string;
 }
 
 @Injectable({
@@ -34,7 +55,7 @@ export class UserService {
       .pipe(tap((user) => this.currentUserSubject.next(this.normalizeUser(user))));
   }
 
-  updateProfile(data: Partial<UserProfile>): Observable<UserProfile> {
+  updateProfile(data: UpdateProfileRequest): Observable<UserProfile> {
     return this.http
       .put<UserProfile>(`${this.baseUrl}/usuarios/perfil`, data)
       .pipe(tap((user) => this.currentUserSubject.next(this.normalizeUser(user))));
