@@ -32,6 +32,10 @@
           }
           <input type="file" accept="image/*" (change)="onAvatarSelected($event)" [disabled]="uploadingAvatar" />
         </label>
+
+        <a routerLink="/pedidos" class="orders-link">
+          <i class="fa-solid fa-box"></i> Meus pedidos <i class="fa-solid fa-chevron-right"></i>
+        </a>
       </aside>
 
       <form class="panel form-panel" (ngSubmit)="saveProfile()">

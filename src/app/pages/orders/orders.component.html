@@ -1,0 +1,134 @@
+<div class="container page">
+  <header class="page-header">
+    <div>
+      <h1>Meus pedidos</h1>
+      @if (!loading && !loadError) {
+        <p>
+          {{ orders.length }} {{ orders.length === 1 ? 'pedido' : 'pedidos' }}
+        </p>
+      }
+    </div>
+    <a routerLink="/profile" class="btn btn-outline btn-sm"><i class="fa-regular fa-id-card"></i> Minha conta</a>
+  </header>
+
+  @if (loading) {
+    <div class="list" aria-busy="true">
+      @for (n of [1, 2, 3]; track n) {
+        <div class="skeleton order-skeleton"></div>
+      }
+    </div>
+  } @else if (loadError) {
+    <div class="empty-state panel">
+      <span class="empty-icon"><i class="fa-solid fa-plug-circle-xmark"></i></span>
+      <h2>Não foi possível carregar seus pedidos</h2>
+      <p>O servidor da loja não respondeu. Tente novamente em instantes.</p>
+      <button type="button" class="btn btn-primary" (click)="load()">Tentar novamente</button>
+    </div>
+  } @else if (!orders.length) {
+    <div class="empty-state panel">
+      <span class="empty-icon"><i class="fa-solid fa-box-open"></i></span>
+      <h2>Você ainda não fez nenhum pedido</h2>
+      <p>Quando você finalizar uma compra, ela aparece aqui com o status do pagamento.</p>
+      <a routerLink="/" class="btn btn-primary">Ver produtos</a>
+    </div>
+  } @else {
+    <div class="list">
+      @for (order of orders; track order.id) {
+        @let st = status(order);
+        @let open = expanded.has(order.id);
+        <article class="panel order" [class.open]="open">
+          <button
+            type="button"
+            class="order-head"
+            (click)="toggle(order.id)"
+            [attr.aria-expanded]="open"
+            [attr.aria-controls]="'pedido-' + order.id"
+          >
+            <div class="head-main">
+              <strong>Pedido #{{ order.id }}</strong>
+              <span class="muted">{{ order.dataCriacao | date: "dd 'de' MMMM 'de' y, HH:mm" }}</span>
+            </div>
+            <span class="badge" [class]="'badge badge-' + st.tone"><i [class]="st.icon"></i> {{ st.label }}</span>
+            <div class="head-total">
+              <span class="muted">{{ itemCount(order) }} {{ itemCount(order) === 1 ? 'item' : 'itens' }}</span>
+              <strong>{{ order.total | currency }}</strong>
+            </div>
+            <i class="fa-solid fa-chevron-down chevron"></i>
+          </button>
+
+          @if (open) {
+            <div class="order-body" [id]="'pedido-' + order.id">
+              <ul class="items">
+                @for (item of order.itens; track item.id) {
+                  @let p = product(item.produtoId);
+                  <li>
+                    <div class="thumb">
+                      @if (p) {
+                        <img [src]="p.image" [alt]="item.nomeProduto" />
+                      } @else {
+                        <i class="fa-solid fa-box"></i>
+                      }
+                    </div>
+                    <div class="item-info">
+                      @if (p) {
+                        <a [routerLink]="['/product', p.id]" class="item-name">{{ item.nomeProduto }}</a>
+                      } @else {
+                        <span class="item-name">{{ item.nomeProduto }}</span>
+                      }
+                      <span class="muted">{{ item.quantidade }} × {{ item.precoUnitario | currency }}</span>
+                    </div>
+                    <strong>{{ item.precoUnitario * item.quantidade | currency }}</strong>
+                  </li>
+                }
+              </ul>
+
+              <div class="payment">
+                <h3>Pagamento</h3>
+                @if (order.pagamento; as pg) {
+                  <p>
+                    {{ methodLabels[pg.metodo] }}
+                    @if (pg.data) {
+                      <span class="muted">· {{ pg.data | date: 'dd/MM/y HH:mm' }}</span>
+                    }
+                  </p>
+
+                  @if (order.status === 'PENDENTE' && pg.codigoPix) {
+                    <div class="code-box">
+                      <span class="label">Código Pix copia e cola</span>
+                      <code>{{ pg.codigoPix }}</code>
+                      <button type="button" class="btn btn-outline btn-sm" (click)="copy(pg.codigoPix, 'Código Pix')">
+                        <i class="fa-regular fa-copy"></i> Copiar
+                      </button>
+                    </div>
+                  }
+                  @if (order.status === 'PENDENTE' && pg.linhaDigitavel) {
+                    <div class="code-box">
+                      <span class="label">Linha digitável do boleto</span>
+                      <code>{{ pg.linhaDigitavel }}</code>
+                      <button type="button" class="btn btn-outline btn-sm" (click)="copy(pg.linhaDigitavel, 'Linha digitável')">
+                        <i class="fa-regular fa-copy"></i> Copiar
+                      </button>
+                    </div>
+                  }
+                } @else {
+                  <p class="muted">Nenhuma forma de pagamento foi escolhida para este pedido.</p>
+                }
+              </div>
+
+              <dl class="totals">
+                <div>
+                  <dt>Frete</dt>
+                  <dd class="free">Grátis</dd>
+                </div>
+                <div class="total">
+                  <dt>Total</dt>
+                  <dd>{{ order.total | currency }}</dd>
+                </div>
+              </dl>
+            </div>
+          }
+        </article>
+      }
+    </div>
+  }
+</div>

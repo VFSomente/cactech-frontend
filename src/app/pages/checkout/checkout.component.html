@@ -192,18 +192,29 @@
           </div>
         </dl>
 
-        <button
-          type="button"
-          class="btn btn-primary btn-lg btn-block"
-          (click)="finalizarCompra()"
-          [disabled]="!selectedMethod || processing"
-        >
-          @if (processing) {
-            <i class="fa-solid fa-circle-notch fa-spin"></i> Processando...
-          } @else {
-            {{ selectedOption?.action ?? 'Escolha a forma de pagamento' }}
-          }
-        </button>
+        @if (orderId) {
+          <div class="order-done">
+            <i class="fa-solid fa-circle-check"></i>
+            <div>
+              <strong>Pedido #{{ orderId }} registrado</strong>
+              <span>Acompanhe o pagamento e o status em Meus pedidos.</span>
+            </div>
+          </div>
+          <a routerLink="/pedidos" class="btn btn-primary btn-lg btn-block">Ver meus pedidos</a>
+        } @else {
+          <button
+            type="button"
+            class="btn btn-primary btn-lg btn-block"
+            (click)="finalizarCompra()"
+            [disabled]="!selectedMethod || processing"
+          >
+            @if (processing) {
+              <i class="fa-solid fa-circle-notch fa-spin"></i> Processando...
+            } @else {
+              {{ selectedOption?.action ?? 'Escolha a forma de pagamento' }}
+            }
+          </button>
+        }
       </aside>
     </div>
   } @else {

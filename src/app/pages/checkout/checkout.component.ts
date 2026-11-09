@@ -36,6 +36,10 @@ export class CheckoutComponent {
   paymentError = false;
   cartItems: Product[] = [];
   processing = false;
+  /** Pedido concluído (pagamento registrado). */
+  orderId?: number;
+  /** Pedido criado cujo pagamento ainda não deu certo. */
+  private pendingOrderId?: number;
 
   cardNumber = '';
   cardName = '';
@@ -130,6 +134,7 @@ export class CheckoutComponent {
   }
 
   selectMethod(method: MetodoPagamento): void {
+    if (this.orderId) return; // pedido já concluído
     this.selectedMethod = method;
     this.pixCode = '';
     this.boletoLinhaDigitavel = '';
@@ -146,7 +151,7 @@ export class CheckoutComponent {
   }
 
   finalizarCompra(): void {
-    if (!this.selectedMethod || this.cartItems.length === 0 || this.processing) return;
+    if (!this.selectedMethod || this.cartItems.length === 0 || this.processing || this.orderId) return;
 
     this.processing = true;
     this.pixCode = '';
@@ -154,7 +159,14 @@ export class CheckoutComponent {
     this.paymentMessage = '';
     this.paymentError = false;
 
+    // Se o pedido já foi criado e só o pagamento falhou, reaproveita o mesmo pedido
+    if (this.pendingOrderId) {
+      this.pagar(this.pendingOrderId);
+      return;
+    }
+
     const itens = this.cartItems.map((item) => ({
+      produtoId: item.id,
       nomeProduto: item.name,
       quantidade: 1,
       precoUnitario: item.price
@@ -162,27 +174,35 @@ export class CheckoutComponent {
 
     this.pedidoService.criarPedido({ itens }).subscribe({
       next: (pedidoResponse) => {
-        const pedidoId = pedidoResponse?.id ?? pedidoResponse?.pedidoId ?? pedidoResponse?.data?.id;
+        const pedidoId = Number(pedidoResponse?.id);
         if (!pedidoId) {
           this.processing = false;
           this.fail('Pedido criado, mas o número do pedido não foi retornado.');
           return;
         }
-
-        this.pedidoService.processarPagamento(Number(pedidoId), this.selectedMethod as MetodoPagamento).subscribe({
-          next: (pagamentoResponse) => {
-            this.processing = false;
-            this.handlePagamentoResponse(this.selectedMethod as MetodoPagamento, pagamentoResponse);
-          },
-          error: () => {
-            this.processing = false;
-            this.fail('Não foi possível processar o pagamento. Tente novamente.');
-          }
-        });
+        this.pendingOrderId = pedidoId;
+        this.pagar(pedidoId);
       },
       error: () => {
         this.processing = false;
-        this.fail('Não foi possível criar o pedido. Verifique se você está conectado à sua conta.');
+        this.fail('Não foi possível criar o pedido. Tente novamente.');
+      }
+    });
+  }
+
+  private pagar(pedidoId: number): void {
+    const method = this.selectedMethod as MetodoPagamento;
+    this.pedidoService.processarPagamento(pedidoId, method).subscribe({
+      next: (pagamentoResponse) => {
+        this.processing = false;
+        this.orderId = pedidoId;
+        this.pendingOrderId = undefined;
+        this.cartService.clearCart();
+        this.handlePagamentoResponse(method, pagamentoResponse);
+      },
+      error: () => {
+        this.processing = false;
+        this.fail('Não foi possível processar o pagamento. Tente novamente.');
       }
     });
   }

@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { UpdateProfileRequest, UserProfile, UserService } from '../services/user/user.service';
 import { AuthService } from '../services/auth/auth.service';
 import { ToastService } from '../services/toast/toast.service';
@@ -22,7 +22,7 @@ const UFS = [
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, RouterLink],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
