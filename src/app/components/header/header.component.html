@@ -39,7 +39,7 @@
               <span class="avatar avatar-fallback"><i class="fa-regular fa-user"></i></span>
             }
             <span class="action-text">
-              <small>Olá, {{ userName }}</small>
+              <small>{{ userName ? 'Olá, ' + userName : 'Olá!' }}</small>
               Minha conta <i class="fa-solid fa-chevron-down chevron" [class.open]="menuOpen"></i>
             </span>
           </button>

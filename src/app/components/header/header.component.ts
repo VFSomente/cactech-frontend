@@ -70,10 +70,11 @@ export class HeaderComponent implements OnInit {
     return !!this.authService.getToken();
   }
 
+  /** Primeiro nome do usuário, ou vazio enquanto os dados não carregaram. */
   get userName(): string {
     const u = this.currentUser;
-    const full = u?.nome || u?.nomeCompleto || u?.username || 'Minha conta';
-    return full.split(' ')[0];
+    const full = (u?.nome || u?.nomeCompleto || u?.username || '').trim();
+    return full.split(/\s+/)[0];
   }
 
   get userAvatar(): string {

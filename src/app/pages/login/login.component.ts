@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService, RegisterRequest } from '../services/auth/auth.service';
 import { UserService } from '../services/user/user.service';
 
@@ -29,7 +29,8 @@ export class LoginComponent {
   constructor(
     private authService: AuthService,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   toggleForm(login: boolean): void {
@@ -51,7 +52,10 @@ export class LoginComponent {
       next: () => {
         this.loading = false;
         this.userService.refreshMeIfToken(this.authService.getToken());
-        this.router.navigate(['/']);
+        // Volta para onde o usuário estava (ex.: /profile), só aceitando caminhos internos
+        const voltar = this.route.snapshot.queryParamMap.get('voltar') ?? '';
+        const destino = voltar.startsWith('/') && !voltar.startsWith('//') && !voltar.startsWith('/login') ? voltar : '/';
+        this.router.navigateByUrl(destino);
       },
       error: (err: HttpErrorResponse) => {
         this.loading = false;
