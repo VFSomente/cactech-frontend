@@ -362,6 +362,104 @@ button {
   gap: 20px;
 }
 
+/* ---------- Autenticação (login, esqueci a senha, redefinir) ---------- */
+.auth {
+  display: flex;
+  justify-content: center;
+  padding-top: 56px;
+  padding-bottom: 80px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 460px;
+  padding: 32px;
+}
+
+.auth-card h1 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.auth-card .subtitle {
+  margin: 6px 0 24px;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.auth-card .alert {
+  margin-bottom: 20px;
+}
+
+.auth-card .form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-card .form .btn {
+  margin-top: 8px;
+}
+
+.auth-card .back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.auth-card .back:hover {
+  color: var(--text);
+}
+
+.auth-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 18px;
+  border-radius: 14px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 1.3rem;
+}
+
+.password {
+  position: relative;
+}
+
+.password .input {
+  padding-right: 48px;
+}
+
+.password button {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+}
+
+.password button:hover {
+  color: var(--text);
+}
+
+@media (max-width: 520px) {
+  .auth {
+    padding-top: 28px;
+  }
+
+  .auth-card {
+    padding: 24px 20px;
+  }
+}
+
 /* ---------- Carregamento ---------- */
 .skeleton {
   min-height: 380px;

@@ -47,6 +47,15 @@ export class AuthService {
     return this.http.post(`${this.baseUrl}/auth/register`, payload);
   }
 
+  /** Pede o link de redefinição. A API responde igual exista ou não o e-mail. */
+  forgotPassword(email: string): Observable<{ mensagem: string }> {
+    return this.http.post<{ mensagem: string }>(`${this.baseUrl}/auth/esqueci-senha`, { email });
+  }
+
+  resetPassword(token: string, novaSenha: string): Observable<{ mensagem: string }> {
+    return this.http.post<{ mensagem: string }>(`${this.baseUrl}/auth/redefinir-senha`, { token, novaSenha });
+  }
+
   setToken(token: string): void {
     localStorage.setItem(this.tokenKey, token);
   }

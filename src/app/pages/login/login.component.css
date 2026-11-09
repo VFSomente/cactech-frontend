@@ -1,15 +1,4 @@
-.auth {
-  display: flex;
-  justify-content: center;
-  padding-top: 56px;
-  padding-bottom: 80px;
-}
-
-.auth-card {
-  width: 100%;
-  max-width: 460px;
-  padding: 32px;
-}
+/* Cartão, campos e senha vêm do bloco "Autenticação" em styles.css */
 
 .tabs {
   display: grid;
@@ -34,70 +23,29 @@
   color: var(--on-accent);
 }
 
-h1 {
-  font-size: 1.6rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-}
-
-.subtitle {
-  margin: 6px 0 24px;
-  color: var(--text-muted);
-  font-size: 0.92rem;
-}
-
-.alert {
-  margin-bottom: 20px;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.form .btn {
-  margin-top: 8px;
-}
-
 .row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
 }
 
-.password {
-  position: relative;
+.label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
 }
 
-.password .input {
-  padding-right: 48px;
+.forgot {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--accent);
 }
 
-.password button {
-  position: absolute;
-  right: 6px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-sm);
-  color: var(--text-muted);
-}
-
-.password button:hover {
-  color: var(--text);
+.forgot:hover {
+  text-decoration: underline;
 }
 
 @media (max-width: 520px) {
-  .auth {
-    padding-top: 28px;
-  }
-
-  .auth-card {
-    padding: 24px 20px;
-  }
-
   .row {
     grid-template-columns: 1fr;
   }
