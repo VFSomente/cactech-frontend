@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthService, RegisterRequest } from '../services/auth/auth.service';
 import { UserService } from '../services/user/user.service';
@@ -52,9 +53,12 @@ export class LoginComponent {
         this.userService.refreshMeIfToken(this.authService.getToken());
         this.router.navigate(['/']);
       },
-      error: () => {
+      error: (err: HttpErrorResponse) => {
         this.loading = false;
-        this.errorMessage = 'Usuário ou senha incorretos.';
+        this.errorMessage =
+          err.status === 0
+            ? 'Não foi possível conectar ao servidor. Tente novamente em instantes.'
+            : 'Usuário ou senha incorretos.';
       }
     });
   }
@@ -90,10 +94,30 @@ export class LoginComponent {
         this.loginPassword = '';
         this.successMessage = 'Conta criada com sucesso. Entre com sua senha para continuar.';
       },
-      error: () => {
+      error: (err: HttpErrorResponse) => {
         this.loading = false;
-        this.errorMessage = 'Não foi possível criar a conta. Verifique os dados e tente novamente.';
+        this.errorMessage = this.registerErrorMessage(err);
       }
     });
+  }
+
+  /** Traduz a resposta da API em uma mensagem clara para o usuário. */
+  private registerErrorMessage(err: HttpErrorResponse): string {
+    if (err.status === 0) {
+      return 'Não foi possível conectar ao servidor. Tente novamente em instantes.';
+    }
+    const apiMessage: string = err.error?.message ?? '';
+    if (err.status === 409) {
+      if (/email/i.test(apiMessage)) {
+        return 'Este e-mail já está cadastrado. Entre com sua conta ou use outro e-mail.';
+      }
+      if (/username/i.test(apiMessage)) {
+        return 'Este nome de usuário já está em uso. Escolha outro.';
+      }
+    }
+    if (err.status === 400 && /email/i.test(apiMessage)) {
+      return 'Informe um e-mail válido.';
+    }
+    return 'Não foi possível criar a conta. Verifique os dados e tente novamente.';
   }
 }
