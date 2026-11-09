@@ -1,55 +1,88 @@
-<section class="profile-page">
-  <div class="profile-card">
-    <div class="profile-header">
-      <h1>Meu Perfil</h1>
-      <button type="button" class="back-btn" (click)="backHome()">Voltar</button>
+<div class="container page">
+  <header class="page-header">
+    <div>
+      <h1>Minha conta</h1>
+      <p>Gerencie seus dados pessoais e de entrega.</p>
     </div>
+    <button type="button" class="btn btn-outline btn-sm" (click)="logout()">
+      <i class="fa-solid fa-arrow-right-from-bracket"></i> Sair
+    </button>
+  </header>
 
-    <p *ngIf="loading" class="muted">Carregando perfil...</p>
-    <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
-    <p *ngIf="message" class="success">{{ message }}</p>
-
-    <div class="profile-body" *ngIf="!loading">
-      <div class="avatar-block">
-        <img
-          [src]="avatarPreview || 'https://via.placeholder.com/140x140?text=Avatar'"
-          alt="Avatar do usuário"
-          class="avatar-image"
-        />
-        <label class="upload-btn">
-          Trocar avatar
-          <input type="file" accept="image/*" (change)="onAvatarSelected($event)" />
-        </label>
-        <small *ngIf="uploadingAvatar" class="muted">Enviando avatar...</small>
-      </div>
-
-      <form class="profile-form" (ngSubmit)="saveProfile()">
-        <div class="form-grid">
-          <label>
-            Nome
-            <input type="text" [(ngModel)]="profile.nome" name="nome" />
-          </label>
-          <label>
-            Username
-            <input type="text" [value]="profile.username" disabled />
-          </label>
-          <label>
-            Email
-            <input type="email" [value]="profile.email" disabled />
-          </label>
-          <label>
-            Telefone
-            <input type="text" [(ngModel)]="profile.telefone" name="telefone" />
-          </label>
-          <label class="full">
-            Endereço
-            <input type="text" [(ngModel)]="profile.endereco" name="endereco" />
-          </label>
+  @if (loading) {
+    <div class="panel loading"><i class="fa-solid fa-circle-notch fa-spin"></i> Carregando perfil...</div>
+  } @else {
+    <div class="profile-layout">
+      <aside class="panel identity">
+        <div class="avatar">
+          @if (avatarPreview) {
+            <img [src]="avatarPreview" alt="Foto de perfil" />
+          } @else {
+            <span>{{ initials }}</span>
+          }
         </div>
-        <button type="submit" class="save-btn" [disabled]="saving">
-          {{ saving ? 'Salvando...' : 'Salvar alterações' }}
-        </button>
-      </form>
+        <strong>{{ profile.nome || profile.username }}</strong>
+        <span class="muted">{{ profile.email }}</span>
+
+        <label class="btn btn-outline btn-sm upload">
+          @if (uploadingAvatar) {
+            <i class="fa-solid fa-circle-notch fa-spin"></i> Enviando...
+          } @else {
+            <i class="fa-solid fa-camera"></i> Trocar foto
+          }
+          <input type="file" accept="image/*" (change)="onAvatarSelected($event)" [disabled]="uploadingAvatar" />
+        </label>
+      </aside>
+
+      <section class="panel form-panel">
+        <h2>Dados pessoais</h2>
+
+        @if (errorMessage) {
+          <div class="alert alert-error" role="alert"><i class="fa-solid fa-circle-exclamation"></i> {{ errorMessage }}</div>
+        }
+        @if (message) {
+          <div class="alert alert-success" role="status"><i class="fa-solid fa-circle-check"></i> {{ message }}</div>
+        }
+
+        <form (ngSubmit)="saveProfile()">
+          <div class="grid">
+            <div class="field full">
+              <label for="nome">Nome completo</label>
+              <input id="nome" class="input" type="text" autocomplete="name" [(ngModel)]="profile.nome" name="nome" />
+            </div>
+            <div class="field">
+              <label for="username">Usuário</label>
+              <input id="username" class="input" type="text" [value]="profile.username" disabled />
+            </div>
+            <div class="field">
+              <label for="email">E-mail</label>
+              <input id="email" class="input" type="email" [value]="profile.email" disabled />
+            </div>
+            <div class="field">
+              <label for="telefone">Telefone</label>
+              <input id="telefone" class="input" type="tel" autocomplete="tel" placeholder="(83) 90000-0000" [(ngModel)]="profile.telefone" name="telefone" />
+            </div>
+            <div class="field full">
+              <label for="endereco">Endereço de entrega</label>
+              <input
+                id="endereco"
+                class="input"
+                type="text"
+                autocomplete="street-address"
+                placeholder="Rua, número, bairro, cidade"
+                [(ngModel)]="profile.endereco"
+                name="endereco"
+              />
+            </div>
+          </div>
+
+          <div class="actions">
+            <button type="submit" class="btn btn-primary" [disabled]="saving">
+              @if (saving) { <i class="fa-solid fa-circle-notch fa-spin"></i> Salvando... } @else { Salvar alterações }
+            </button>
+          </div>
+        </form>
+      </section>
     </div>
-  </div>
-</section>
+  }
+</div>

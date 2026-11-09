@@ -1,72 +1,62 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { Product } from '../product/product.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
-  private cart: any[] = [];
-  
-  // 🔹 Observables para contagem e itens do carrinho
+  private cart: Product[] = [];
+
   private cartCount = new BehaviorSubject<number>(0);
   cartCount$ = this.cartCount.asObservable();
 
-  private cartItemsSubject = new BehaviorSubject<any[]>([]);
+  private cartItemsSubject = new BehaviorSubject<Product[]>([]);
   cartItems$ = this.cartItemsSubject.asObservable();
 
   constructor() {
-    const savedCart = localStorage.getItem('cart');
-    this.cart = savedCart ? JSON.parse(savedCart) : [];
+    try {
+      const saved = JSON.parse(localStorage.getItem('cart') || '[]');
+      this.cart = Array.isArray(saved) ? saved : [];
+    } catch {
+      this.cart = [];
+    }
     this.updateCartState();
   }
 
-  // 🔹 Retorna o carrinho atual
-  getCart() {
+  getCart(): Product[] {
     return this.cart;
   }
 
-  // 🔹 Adiciona um item
-  addToCart(product: any) {
+  addToCart(product: Product): void {
     this.cart.push(product);
     this.updateCartState();
   }
 
-  // 🔹 Remove apenas uma ocorrência do produto
-  removeFromCart(item: any) {
-    const index = this.cart.findIndex(cartItem => cartItem.id === item.id);
-    if (index !== -1) {
+  /** Remove o item na posição indicada (funciona mesmo para itens antigos sem id). */
+  removeAt(index: number): void {
+    if (index >= 0 && index < this.cart.length) {
       this.cart.splice(index, 1);
       this.updateCartState();
     }
   }
 
-  // 🔹 Limpa o carrinho
-  clearCart() {
+  clearCart(): void {
     this.cart = [];
     this.updateCartState();
   }
 
-  // 🔹 Total do carrinho
-  getTotal() {
+  getTotal(): number {
     return this.cart.reduce((sum, item) => sum + item.price, 0);
   }
 
-  // 🔹 Total de itens
-  getTotalItems() {
+  getTotalItems(): number {
     return this.cart.length;
   }
 
-  // ===========================================================
-  // 🔧 MÉTODOS AUXILIARES INTERNOS
-  // ===========================================================
-
-  private updateCartState() {
-    this.saveCart();
-    this.cartCount.next(this.cart.length);
-    this.cartItemsSubject.next([...this.cart]); // 🔹 emite nova cópia do carrinho
-  }
-
-  private saveCart() {
+  private updateCartState(): void {
     localStorage.setItem('cart', JSON.stringify(this.cart));
+    this.cartCount.next(this.cart.length);
+    this.cartItemsSubject.next([...this.cart]);
   }
 }

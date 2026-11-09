@@ -1,23 +1,40 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { CurrencyPipe } from '@angular/common';
+import { Router, RouterLink } from '@angular/router';
 import { CartService } from '../services/cart/cart.service';
 import { MetodoPagamento, PedidoService } from '../services/pedido/pedido.service';
+import { ToastService } from '../services/toast/toast.service';
+import { Product } from '../services/product/product.service';
+
+interface PaymentOption {
+  id: MetodoPagamento;
+  label: string;
+  hint: string;
+  icon: string;
+  action: string;
+}
 
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CurrencyPipe, RouterLink],
   templateUrl: './checkout.component.html',
   styleUrls: ['./checkout.component.css']
 })
 export class CheckoutComponent {
-  selectedMethod: 'cartao' | 'boleto' | 'pix' | null = null;
+  readonly paymentOptions: PaymentOption[] = [
+    { id: 'cartao', label: 'Cartão de crédito', hint: 'Até 12x sem juros', icon: 'fa-regular fa-credit-card', action: 'Pagar com cartão' },
+    { id: 'pix', label: 'Pix', hint: 'Código copia e cola', icon: 'fa-solid fa-qrcode', action: 'Gerar código Pix' },
+    { id: 'boleto', label: 'Boleto bancário', hint: 'Vence em 3 dias', icon: 'fa-solid fa-barcode', action: 'Gerar boleto' }
+  ];
+  private readonly brandImages = ['visa', 'mastercard', 'elo', 'hipercard'];
+
+  selectedMethod: MetodoPagamento | null = null;
   pixCode = '';
   boletoLinhaDigitavel = '';
   paymentMessage = '';
-  cartItems: any[] = [];
-  total = 0;
+  paymentError = false;
+  cartItems: Product[] = [];
   processing = false;
 
   cardNumber = '';
@@ -30,24 +47,37 @@ export class CheckoutComponent {
   constructor(
     private router: Router,
     private cartService: CartService,
-    private pedidoService: PedidoService
+    private pedidoService: PedidoService,
+    private toastService: ToastService
   ) {
     const navigation = this.router.getCurrentNavigation();
     this.cartItems = navigation?.extras.state?.['cartItems'] || this.cartService.getCart();
   }
 
-  updateName(event: any): void {
-    this.cardName = event.target.value.toUpperCase();
+  get selectedOption(): PaymentOption | undefined {
+    return this.paymentOptions.find((o) => o.id === this.selectedMethod);
   }
 
-  updateExpiry(event: any): void {
-    let value = event.target.value.replace(/\D/g, '');
+  get brandImage(): string {
+    return this.brandImages.includes(this.cardBrand) ? `assets/images/payments/${this.cardBrand}.png` : '';
+  }
+
+  updateName(event: Event): void {
+    this.cardName = (event.target as HTMLInputElement).value.toUpperCase();
+  }
+
+  updateExpiry(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    let value = input.value.replace(/\D/g, '');
     if (value.length > 2) value = value.slice(0, 2) + '/' + value.slice(2, 4);
     this.cardExpiry = value;
+    input.value = value;
   }
 
-  updateCvv(event: any): void {
-    this.cardCvv = event.target.value;
+  updateCvv(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.cardCvv = input.value.replace(/\D/g, '');
+    input.value = this.cardCvv;
   }
 
   flipCard(flip: boolean): void {
@@ -60,10 +90,6 @@ export class CheckoutComponent {
     const bin6 = num.slice(0, 6);
     const bin4 = num.slice(0, 4);
     const bin6num = parseInt(bin6, 10);
-
-    if (/^4/.test(num)) return 'visa';
-    if (/^5[1-5]/.test(num) || (Number(bin4) >= 2221 && Number(bin4) <= 2720)) return 'mastercard';
-    if (/^3[47]/.test(num)) return 'amex';
 
     const hipercardPrefixes = ['606282', '384100', '384140', '384160', '384120'];
     if (hipercardPrefixes.includes(bin6) || hipercardPrefixes.includes(bin4)) return 'hipercard';
@@ -88,34 +114,35 @@ export class CheckoutComponent {
     for (const [start, end] of eloRanges) {
       if (bin6num >= start && bin6num <= end) return 'elo';
     }
+
+    if (/^4/.test(num)) return 'visa';
+    if (/^5[1-5]/.test(num) || (Number(bin4) >= 2221 && Number(bin4) <= 2720)) return 'mastercard';
+    if (/^3[47]/.test(num)) return 'amex';
     return '';
   }
 
-  updateNumber(event: any): void {
-    const digits = (event.target.value || '').replace(/\D/g, '');
+  updateNumber(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const digits = (input.value || '').replace(/\D/g, '').slice(0, 16);
     this.cardNumber = digits.replace(/(.{4})/g, '$1 ').trim();
     this.cardBrand = this.detectCardBrand(digits);
+    input.value = this.cardNumber;
   }
 
-  loadCart(): void {
-    this.cartItems = this.cartService.getCart();
-    this.total = this.cartService.getTotal();
-  }
-
-  selectMethod(method: 'cartao' | 'boleto' | 'pix'): void {
+  selectMethod(method: MetodoPagamento): void {
     this.selectedMethod = method;
     this.pixCode = '';
     this.boletoLinhaDigitavel = '';
     this.paymentMessage = '';
-  }
-
-  gerarBoleto(): void {
-    this.finalizarCompra();
+    this.paymentError = false;
   }
 
   copiarPix(): void {
     if (!this.pixCode) return;
-    navigator.clipboard.writeText(this.pixCode);
+    navigator.clipboard.writeText(this.pixCode).then(
+      () => this.toastService.show('Código Pix copiado.'),
+      () => this.toastService.show('Não foi possível copiar o código.', 'error')
+    );
   }
 
   finalizarCompra(): void {
@@ -125,6 +152,7 @@ export class CheckoutComponent {
     this.pixCode = '';
     this.boletoLinhaDigitavel = '';
     this.paymentMessage = '';
+    this.paymentError = false;
 
     const itens = this.cartItems.map((item) => ({
       nomeProduto: item.name,
@@ -137,7 +165,7 @@ export class CheckoutComponent {
         const pedidoId = pedidoResponse?.id ?? pedidoResponse?.pedidoId ?? pedidoResponse?.data?.id;
         if (!pedidoId) {
           this.processing = false;
-          this.paymentMessage = 'Pedido criado, mas o ID nao foi retornado.';
+          this.fail('Pedido criado, mas o número do pedido não foi retornado.');
           return;
         }
 
@@ -148,25 +176,30 @@ export class CheckoutComponent {
           },
           error: () => {
             this.processing = false;
-            this.paymentMessage = 'Falha ao processar pagamento.';
+            this.fail('Não foi possível processar o pagamento. Tente novamente.');
           }
         });
       },
       error: () => {
         this.processing = false;
-        this.paymentMessage = 'Falha ao criar pedido.';
+        this.fail('Não foi possível criar o pedido. Verifique se você está conectado à sua conta.');
       }
     });
   }
 
   getTotalPrice(): number {
-    return this.cartService.getTotal();
+    return this.cartItems.reduce((sum, item) => sum + item.price, 0);
+  }
+
+  private fail(message: string): void {
+    this.paymentError = true;
+    this.paymentMessage = message;
   }
 
   private handlePagamentoResponse(method: MetodoPagamento, response: any): void {
     if (method === 'pix') {
       this.pixCode = response?.codigoPix ?? response?.pixCode ?? response?.codigo ?? 'PIX gerado.';
-      this.paymentMessage = 'Pagamento PIX gerado com sucesso.';
+      this.paymentMessage = 'Código Pix gerado com sucesso.';
       return;
     }
 
@@ -176,6 +209,6 @@ export class CheckoutComponent {
       return;
     }
 
-    this.paymentMessage = response?.mensagem ?? response?.status ?? 'Pagamento com cartao processado com sucesso.';
+    this.paymentMessage = response?.mensagem ?? response?.status ?? 'Pagamento com cartão processado com sucesso.';
   }
 }

@@ -1,88 +1,98 @@
-<header class="navbar">
-  <!-- Linha superior -->
-  <div class="navbar-top">
-    <div class="navbar-left">
-      <img src="../../assets/images/cactechlogo.png" alt="CacTech" class="logo" />
-    </div>
-    <a class="logo-text" href=""><p class="logo-text">Cac<span>Tech</span></p></a>
-    
-
-    <div class="navbar-center">
-      <div class="search-wrapper">
-        <input
-          type="text"
-          placeholder="Pesquise seu produto..."
-          class="search-bar"
-        />
-        <button class="search-btn">
-          <i class="fas fa-search"></i>
-        </button>
-      </div>
-    </div>
-
-    <div class="navbar-right">
-      <a href="#" class="account" title="Minha Conta">
-        <i class="fas fa-user-circle"></i>
-        <span>Entrar</span>
-      </a>
-
-      <a href="#" class="wishlist" title="Favoritos">
-        <i class="fas fa-heart"></i>
-      </a>
-
-      <a href="#" class="cart" title="Carrinho">
-        <i class="fas fa-shopping-cart"></i>
-        <span class="cart-count">0</span>
-      </a>
-    </div>
-  </div>
-
-  <!-- Linha inferior com os links principais -->
-  <nav class="navbar-bottom">
-    <a href="#">DEPARTAMENTOS</a>
-    <a href="#">PROMOÇÕES</a>
-    <a href="#">PC GAMER</a>
-    <a href="#">KIT UPGRADE</a>
-    <a href="#">HARDWARE</a>
-    <a href="#">NOTEBOOKS</a>
-    <a href="#">MONITORES</a>
-    <a href="#">ATENDIMENTO</a>
-  </nav>
-</header>
-
-
-<div class="auth-container">
-  <div class="auth-card">
-    <div class="auth-toggle">
-      <button 
-        [class.active]="isLogin" 
-        (click)="toggleForm(true)">
+<div class="container auth">
+  <div class="panel auth-card">
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" [class.active]="isLogin" [attr.aria-selected]="isLogin" (click)="toggleForm(true)">
         Entrar
       </button>
-      <button 
-        [class.active]="!isLogin" 
-        (click)="toggleForm(false)">
-        Cadastrar
+      <button type="button" role="tab" [class.active]="!isLogin" [attr.aria-selected]="!isLogin" (click)="toggleForm(false)">
+        Criar conta
       </button>
     </div>
 
-    <h2>{{ isLogin ? 'Bem-vindo de volta!' : 'Crie sua conta' }}</h2>
+    <h1>{{ isLogin ? 'Bem-vindo de volta' : 'Crie sua conta' }}</h1>
+    <p class="subtitle">
+      {{ isLogin ? 'Entre para acompanhar seus pedidos e finalizar compras.' : 'Leva menos de um minuto.' }}
+    </p>
 
-    <form *ngIf="isLogin" (ngSubmit)="login()">
-      <input type="text" placeholder="Usuário" [(ngModel)]="loginUsername" name="loginUsername" required />
-      <input type="password" placeholder="Senha" [(ngModel)]="loginPassword" name="loginPassword" required />
-      <button type="submit" class="btn-neon" [disabled]="loading">Entrar</button>
-    </form>
+    @if (successMessage) {
+      <div class="alert alert-success" role="status">
+        <i class="fa-solid fa-circle-check"></i> {{ successMessage }}
+      </div>
+    }
+    @if (errorMessage) {
+      <div class="alert alert-error" role="alert">
+        <i class="fa-solid fa-circle-exclamation"></i> {{ errorMessage }}
+      </div>
+    }
 
-    <form *ngIf="!isLogin" (ngSubmit)="register()">
-      <input type="text" placeholder="Nome completo" [(ngModel)]="registerName" name="registerName" required />
-      <input type="text" placeholder="Usuário" [(ngModel)]="registerUsername" name="registerUsername" required />
-      <input type="email" placeholder="E-mail" [(ngModel)]="registerEmail" name="registerEmail" required />
-      <input type="text" placeholder="Telefone" [(ngModel)]="registerPhone" name="registerPhone" />
-      <input type="password" placeholder="Senha" [(ngModel)]="registerPassword" name="registerPassword" required />
-      <button type="submit" class="btn-neon" [disabled]="loading">Cadastrar</button>
-    </form>
-
-    <p *ngIf="errorMessage" style="color: #ff6b6b; margin-top: 12px;">{{ errorMessage }}</p>
+    @if (isLogin) {
+      <form (ngSubmit)="login()" class="form">
+        <div class="field">
+          <label for="loginUsername">Usuário</label>
+          <input id="loginUsername" class="input" type="text" autocomplete="username" [(ngModel)]="loginUsername" name="loginUsername" required />
+        </div>
+        <div class="field">
+          <label for="loginPassword">Senha</label>
+          <div class="password">
+            <input
+              id="loginPassword"
+              class="input"
+              [type]="showPassword ? 'text' : 'password'"
+              autocomplete="current-password"
+              [(ngModel)]="loginPassword"
+              name="loginPassword"
+              required
+            />
+            <button type="button" (click)="showPassword = !showPassword" [attr.aria-label]="showPassword ? 'Ocultar senha' : 'Mostrar senha'">
+              <i [class]="showPassword ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye'"></i>
+            </button>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg btn-block" [disabled]="loading">
+          @if (loading) { <i class="fa-solid fa-circle-notch fa-spin"></i> Entrando... } @else { Entrar }
+        </button>
+      </form>
+    } @else {
+      <form (ngSubmit)="register()" class="form">
+        <div class="field">
+          <label for="registerName">Nome completo *</label>
+          <input id="registerName" class="input" type="text" autocomplete="name" [(ngModel)]="registerName" name="registerName" required />
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="registerUsername">Usuário *</label>
+            <input id="registerUsername" class="input" type="text" autocomplete="username" [(ngModel)]="registerUsername" name="registerUsername" required />
+          </div>
+          <div class="field">
+            <label for="registerPhone">Telefone</label>
+            <input id="registerPhone" class="input" type="tel" autocomplete="tel" placeholder="(83) 90000-0000" [(ngModel)]="registerPhone" name="registerPhone" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="registerEmail">E-mail *</label>
+          <input id="registerEmail" class="input" type="email" autocomplete="email" [(ngModel)]="registerEmail" name="registerEmail" required />
+        </div>
+        <div class="field">
+          <label for="registerPassword">Senha *</label>
+          <div class="password">
+            <input
+              id="registerPassword"
+              class="input"
+              [type]="showPassword ? 'text' : 'password'"
+              autocomplete="new-password"
+              [(ngModel)]="registerPassword"
+              name="registerPassword"
+              required
+            />
+            <button type="button" (click)="showPassword = !showPassword" [attr.aria-label]="showPassword ? 'Ocultar senha' : 'Mostrar senha'">
+              <i [class]="showPassword ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye'"></i>
+            </button>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg btn-block" [disabled]="loading">
+          @if (loading) { <i class="fa-solid fa-circle-notch fa-spin"></i> Criando conta... } @else { Criar conta }
+        </button>
+      </form>
+    }
   </div>
 </div>

@@ -1,17 +1,17 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserProfile, UserService } from '../services/user/user.service';
+import { AuthService } from '../services/auth/auth.service';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
-export class ProfileComponent {
+export class ProfileComponent implements OnInit {
   loading = false;
   saving = false;
   uploadingAvatar = false;
@@ -29,7 +29,17 @@ export class ProfileComponent {
     avatarUrl: ''
   };
 
-  constructor(private userService: UserService, private router: Router) {}
+  constructor(
+    private userService: UserService,
+    private authService: AuthService,
+    private router: Router
+  ) {}
+
+  get initials(): string {
+    const name = (this.profile.nome || this.profile.username || '').trim();
+    const parts = name.split(/\s+/).filter(Boolean);
+    return ((parts[0]?.[0] ?? '') + (parts.length > 1 ? parts[parts.length - 1][0] : '')).toUpperCase() || '?';
+  }
 
   ngOnInit(): void {
     this.loading = true;
@@ -41,7 +51,7 @@ export class ProfileComponent {
           nome: user.nome || user.nomeCompleto || '',
           nomeCompleto: user.nomeCompleto || user.nome || ''
         };
-        this.avatarPreview = user.avatarUrl || '';
+        this.avatarPreview = this.userService.resolveAvatarUrl(user.avatarUrl);
       },
       error: () => {
         this.loading = false;
@@ -65,7 +75,7 @@ export class ProfileComponent {
       },
       error: () => {
         this.uploadingAvatar = false;
-        this.errorMessage = 'Falha ao enviar avatar.';
+        this.errorMessage = 'Não foi possível enviar a foto.';
       }
     });
   }
@@ -91,17 +101,19 @@ export class ProfileComponent {
           nome: user.nome || user.nomeCompleto || this.profile.nome || '',
           nomeCompleto: user.nomeCompleto || user.nome || this.profile.nomeCompleto || ''
         };
-        this.avatarPreview = user.avatarUrl || this.avatarPreview;
-        this.message = 'Perfil atualizado com sucesso.';
+        this.avatarPreview = this.userService.resolveAvatarUrl(user.avatarUrl) || this.avatarPreview;
+        this.message = 'Alterações salvas.';
       },
       error: () => {
         this.saving = false;
-        this.errorMessage = 'Erro ao salvar perfil.';
+        this.errorMessage = 'Não foi possível salvar as alterações.';
       }
     });
   }
 
-  backHome(): void {
+  logout(): void {
+    this.authService.clearToken();
+    this.userService.clearCurrentUser();
     this.router.navigate(['/']);
   }
 }

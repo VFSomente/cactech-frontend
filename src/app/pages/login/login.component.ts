@@ -1,14 +1,12 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService, RegisterRequest } from '../services/auth/auth.service';
 import { UserService } from '../services/user/user.service';
 
-
 @Component({
   selector: 'app-login',
-  imports: [FormsModule,CommonModule],
+  imports: [FormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -16,6 +14,8 @@ export class LoginComponent {
   isLogin = true;
   loading = false;
   errorMessage = '';
+  successMessage = '';
+  showPassword = false;
 
   loginUsername = '';
   loginPassword = '';
@@ -31,15 +31,20 @@ export class LoginComponent {
     private router: Router
   ) {}
 
-  toggleForm(login: boolean) {
+  toggleForm(login: boolean): void {
     this.isLogin = login;
     this.errorMessage = '';
+    this.successMessage = '';
   }
 
-  login() {
-    if (!this.loginUsername || !this.loginPassword) return;
+  login(): void {
+    if (!this.loginUsername || !this.loginPassword) {
+      this.errorMessage = 'Informe seu usuário e sua senha.';
+      return;
+    }
     this.loading = true;
     this.errorMessage = '';
+    this.successMessage = '';
 
     this.authService.login({ username: this.loginUsername, senha: this.loginPassword }).subscribe({
       next: () => {
@@ -49,13 +54,16 @@ export class LoginComponent {
       },
       error: () => {
         this.loading = false;
-        this.errorMessage = 'Falha no login. Verifique usuário e senha.';
+        this.errorMessage = 'Usuário ou senha incorretos.';
       }
     });
   }
 
-  register() {
-    if (!this.registerName || !this.registerUsername || !this.registerEmail || !this.registerPassword) return;
+  register(): void {
+    if (!this.registerName || !this.registerUsername || !this.registerEmail || !this.registerPassword) {
+      this.errorMessage = 'Preencha todos os campos obrigatórios.';
+      return;
+    }
     this.loading = true;
     this.errorMessage = '';
 
@@ -78,11 +86,13 @@ export class LoginComponent {
       next: () => {
         this.loading = false;
         this.isLogin = true;
-        alert('Cadastro realizado com sucesso. Faça login.');
+        this.loginUsername = this.registerUsername;
+        this.loginPassword = '';
+        this.successMessage = 'Conta criada com sucesso. Entre com sua senha para continuar.';
       },
       error: () => {
         this.loading = false;
-        this.errorMessage = 'Falha no cadastro.';
+        this.errorMessage = 'Não foi possível criar a conta. Verifique os dados e tente novamente.';
       }
     });
   }

@@ -1,0 +1,95 @@
+<div class="topbar">
+  <div class="container topbar-inner">
+    <span><i class="fa-solid fa-truck-fast" aria-hidden="true"></i> Frete grátis para toda a Paraíba</span>
+    <span class="hide-sm"><i class="fa-solid fa-qrcode" aria-hidden="true"></i> 10% OFF no Pix</span>
+    <span class="hide-sm"><i class="fa-regular fa-credit-card" aria-hidden="true"></i> Até 12x sem juros</span>
+  </div>
+</div>
+
+<header class="header">
+  <div class="container header-main">
+    <app-logo />
+
+    <form class="search" role="search" (ngSubmit)="search()">
+      <i class="fa-solid fa-magnifying-glass search-icon" aria-hidden="true"></i>
+      <input
+        type="search"
+        name="q"
+        [(ngModel)]="searchTerm"
+        placeholder="Busque por produtos, marcas e categorias"
+        aria-label="Buscar produtos"
+        autocomplete="off"
+      />
+      <button type="submit" class="btn btn-primary btn-sm">Buscar</button>
+    </form>
+
+    <nav class="actions" aria-label="Conta e compras">
+      @if (isLoggedIn) {
+        <div class="user-menu">
+          <button
+            type="button"
+            class="action"
+            (click)="toggleMenu()"
+            [attr.aria-expanded]="menuOpen"
+            aria-haspopup="menu"
+          >
+            @if (userAvatar) {
+              <img [src]="userAvatar" alt="" class="avatar" />
+            } @else {
+              <span class="avatar avatar-fallback"><i class="fa-regular fa-user"></i></span>
+            }
+            <span class="action-text">
+              <small>Olá, {{ userName }}</small>
+              Minha conta <i class="fa-solid fa-chevron-down chevron" [class.open]="menuOpen"></i>
+            </span>
+          </button>
+
+          @if (menuOpen) {
+            <div class="dropdown" role="menu">
+              <a routerLink="/profile" role="menuitem"><i class="fa-regular fa-id-card"></i> Meu perfil</a>
+              <a routerLink="/favorites" role="menuitem"><i class="fa-regular fa-heart"></i> Favoritos</a>
+              <a routerLink="/cart" role="menuitem"><i class="fa-solid fa-cart-shopping"></i> Carrinho</a>
+              <hr />
+              <button type="button" role="menuitem" (click)="logout()">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Sair
+              </button>
+            </div>
+          }
+        </div>
+      } @else {
+        <a routerLink="/login" class="action">
+          <span class="avatar avatar-fallback"><i class="fa-regular fa-user"></i></span>
+          <span class="action-text">
+            <small>Olá, visitante</small>
+            Entrar ou cadastrar
+          </span>
+        </a>
+      }
+
+      <a routerLink="/favorites" class="icon-action" aria-label="Favoritos" title="Favoritos">
+        <i class="fa-regular fa-heart"></i>
+        @if (favoritesCount) {
+          <span class="badge">{{ favoritesCount }}</span>
+        }
+      </a>
+
+      <a routerLink="/cart" class="icon-action" aria-label="Carrinho" title="Carrinho">
+        <i class="fa-solid fa-cart-shopping"></i>
+        @if (cartCount) {
+          <span class="badge">{{ cartCount }}</span>
+        }
+      </a>
+    </nav>
+  </div>
+
+  <nav class="departments" aria-label="Departamentos">
+    <div class="container departments-inner">
+      <a routerLink="/" [class.active]="isHome && !activeDepartment && !searchTerm">Todos os produtos</a>
+      @for (dep of departments; track dep.slug) {
+        <a routerLink="/" [queryParams]="{ dep: dep.slug }" [class.active]="activeDepartment === dep.slug">
+          {{ dep.label }}
+        </a>
+      }
+    </div>
+  </nav>
+</header>

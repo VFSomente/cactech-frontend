@@ -1,0 +1,58 @@
+<footer class="footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <app-logo />
+      <p>Hardware, monitores, kits upgrade e PCs montados, com frete grátis para toda a Paraíba.</p>
+      <a
+        class="social"
+        href="https://www.instagram.com/cactechjp/"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Instagram da CacTech"
+      >
+        <i class="fa-brands fa-instagram"></i>
+      </a>
+    </div>
+
+    <div class="footer-col">
+      <h4>Departamentos</h4>
+      <ul>
+        @for (dep of departments; track dep.slug) {
+          <li><a routerLink="/" [queryParams]="{ dep: dep.slug }">{{ dep.label }}</a></li>
+        }
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Minha conta</h4>
+      <ul>
+        <li><a routerLink="/login">Entrar ou cadastrar</a></li>
+        <li><a routerLink="/profile">Meu perfil</a></li>
+        <li><a routerLink="/favorites">Favoritos</a></li>
+        <li><a routerLink="/cart">Carrinho</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Atendimento</h4>
+      <ul>
+        <li><i class="fa-solid fa-location-dot"></i> João Pessoa — PB</li>
+        <li>
+          <a href="https://www.instagram.com/cactechjp/" target="_blank" rel="noopener noreferrer">
+            <i class="fa-brands fa-instagram"></i> &#64;cactechjp
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container footer-bottom">
+    <p>© {{ year }} CacTech Informática. Todos os direitos reservados.</p>
+    <div class="payments" aria-label="Formas de pagamento">
+      <span title="Visa"><i class="fa-brands fa-cc-visa"></i></span>
+      <span title="Mastercard"><i class="fa-brands fa-cc-mastercard"></i></span>
+      <span class="pay-text">Pix</span>
+      <span class="pay-text">Boleto</span>
+    </div>
+  </div>
+</footer>

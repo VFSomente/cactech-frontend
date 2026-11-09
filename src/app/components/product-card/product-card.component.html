@@ -1,0 +1,31 @@
+@let p = product();
+<article class="card">
+  <a [routerLink]="['/product', p.id]" class="media" tabindex="-1" aria-hidden="true">
+    <img [src]="p.image" [alt]="p.name" loading="lazy" />
+  </a>
+
+  <button
+    type="button"
+    class="fav"
+    [class.active]="favorite()"
+    [attr.aria-pressed]="favorite()"
+    [attr.aria-label]="favorite() ? 'Remover dos favoritos' : 'Adicionar aos favoritos'"
+    (click)="favoriteToggle.emit(p)"
+  >
+    <i [class]="favorite() ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"></i>
+  </button>
+
+  <div class="body">
+    <span class="category">{{ p.category }}</span>
+    <a [routerLink]="['/product', p.id]" class="title" [title]="p.name">{{ p.name }}</a>
+
+    <div class="price">
+      <strong>{{ p.price | currency }}</strong>
+      <small>em até 12x de {{ p.price / 12 | currency }} sem juros</small>
+    </div>
+
+    <button type="button" class="btn btn-primary btn-sm btn-block" (click)="addToCart.emit(p)">
+      <i class="fa-solid fa-cart-plus"></i> Adicionar ao carrinho
+    </button>
+  </div>
+</article>

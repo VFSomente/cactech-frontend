@@ -1,136 +1,217 @@
-<section class="checkout-page">
-  <div class="checkout-container">
-    <h2 class="checkout-title">Finalizar Compra</h2>
+<div class="container page">
+  <nav class="breadcrumb" aria-label="Você está em">
+    <a routerLink="/cart">Carrinho</a>
+    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+    <span class="current">Pagamento</span>
+  </nav>
 
-    <div class="checkout-products" *ngIf="cartItems.length > 0">
-      <h3>Itens no Carrinho</h3>
+  <header class="page-header">
+    <div>
+      <h1>Finalizar compra</h1>
+      <p>Escolha a forma de pagamento e confirme seu pedido.</p>
+    </div>
+  </header>
 
-      <div *ngFor="let item of cartItems" class="checkout-item">
-        <img [src]="item.image" alt="{{ item.name }}" />
-        <div>
-          <p>{{ item.name }}</p>
-          <span>R$ {{ item.price | number: '1.2-2' }}</span>
+  @if (cartItems.length) {
+    <div class="checkout-layout">
+      <section class="panel payment">
+        <h2><span class="step">1</span> Forma de pagamento</h2>
+
+        <div class="methods" role="radiogroup" aria-label="Forma de pagamento">
+          @for (option of paymentOptions; track option.id) {
+            <button
+              type="button"
+              class="method"
+              role="radio"
+              [class.active]="selectedMethod === option.id"
+              [attr.aria-checked]="selectedMethod === option.id"
+              (click)="selectMethod(option.id)"
+            >
+              <i [class]="option.icon"></i>
+              <span>
+                <strong>{{ option.label }}</strong>
+                <small>{{ option.hint }}</small>
+              </span>
+            </button>
+          }
         </div>
-      </div>
 
-      <div class="summary-details">
-        <span>Valor Total:</span>
-        <span>R$ {{ getTotalPrice() | number: '1.2-2' }}</span>
-      </div>
-    </div>
-
-    <h3>Metodo de Pagamento</h3>
-    <div class="payment-methods">
-      <div class="payment-method" [class.active]="selectedMethod === 'cartao'" (click)="selectMethod('cartao')">
-        Cartao de Credito
-      </div>
-
-      <div class="payment-method" [class.active]="selectedMethod === 'boleto'" (click)="selectMethod('boleto')">
-        Boleto Bancario
-      </div>
-
-      <div class="payment-method" [class.active]="selectedMethod === 'pix'" (click)="selectMethod('pix')">
-        Pix
-      </div>
-    </div>
-
-    <div *ngIf="selectedMethod === 'cartao'">
-      <div class="credit-card-container">
-        <div class="credit-card" [class.flipped]="isBackVisible">
-          <div class="card-face card-front">
-            <div class="card-header">
-              <img
-                *ngIf="cardBrand; else chipFallback"
-                class="card-brand"
-                [src]="'assets/images/payments/' + cardBrand + '.png'"
-                [alt]="cardBrand"
-              />
-              <ng-template #chipFallback>
-                <div class="card-chip" aria-hidden="true"></div>
-              </ng-template>
-            </div>
-
-            <div class="card-number">
-              {{ cardNumber || '#### #### #### ####' }}
-            </div>
-
-            <div class="card-footer">
-              <div class="card-holder">
-                <span>Nome</span>
-                <strong>{{ cardName || 'NOME COMPLETO' }}</strong>
+        @switch (selectedMethod) {
+          @case ('cartao') {
+            <div class="method-body card-area">
+              <div class="card-preview">
+                <div class="credit-card" [class.flipped]="isBackVisible">
+                  <div class="card-face card-front">
+                    <div class="card-top">
+                      @if (brandImage) {
+                        <img class="card-brand" [src]="brandImage" [alt]="cardBrand" />
+                      } @else if (cardBrand) {
+                        <span class="card-brand-text">{{ cardBrand }}</span>
+                      } @else {
+                        <span class="chip" aria-hidden="true"></span>
+                      }
+                    </div>
+                    <div class="card-number">{{ cardNumber || '•••• •••• •••• ••••' }}</div>
+                    <div class="card-bottom">
+                      <div>
+                        <small>Titular</small>
+                        <strong>{{ cardName || 'NOME COMPLETO' }}</strong>
+                      </div>
+                      <div>
+                        <small>Validade</small>
+                        <strong>{{ cardExpiry || 'MM/AA' }}</strong>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-face card-back">
+                    <div class="strip" aria-hidden="true"></div>
+                    <div class="cvv"><small>CVV</small>{{ cardCvv || '•••' }}</div>
+                  </div>
+                </div>
               </div>
 
-              <div class="card-expiration">
-                <span>Validade</span>
-                <strong>{{ cardExpiry || 'MM/AA' }}</strong>
-              </div>
+              <form class="card-form" (submit)="$event.preventDefault()">
+                <div class="field">
+                  <label for="cardNumber">Número do cartão</label>
+                  <input
+                    id="cardNumber"
+                    class="input"
+                    type="text"
+                    inputmode="numeric"
+                    autocomplete="cc-number"
+                    maxlength="19"
+                    placeholder="0000 0000 0000 0000"
+                    (input)="updateNumber($event)"
+                  />
+                </div>
+                <div class="field">
+                  <label for="cardName">Nome impresso no cartão</label>
+                  <input
+                    id="cardName"
+                    class="input"
+                    type="text"
+                    autocomplete="cc-name"
+                    placeholder="Como aparece no cartão"
+                    (input)="updateName($event)"
+                  />
+                </div>
+                <div class="row">
+                  <div class="field">
+                    <label for="cardExpiry">Validade</label>
+                    <input
+                      id="cardExpiry"
+                      class="input"
+                      type="text"
+                      inputmode="numeric"
+                      autocomplete="cc-exp"
+                      maxlength="5"
+                      placeholder="MM/AA"
+                      (input)="updateExpiry($event)"
+                    />
+                  </div>
+                  <div class="field">
+                    <label for="cardCvv">CVV</label>
+                    <input
+                      id="cardCvv"
+                      class="input"
+                      type="text"
+                      inputmode="numeric"
+                      autocomplete="cc-csc"
+                      [attr.maxlength]="cardBrand === 'amex' ? 4 : 3"
+                      placeholder="123"
+                      (focus)="flipCard(true)"
+                      (blur)="flipCard(false)"
+                      (input)="updateCvv($event)"
+                    />
+                  </div>
+                </div>
+              </form>
             </div>
+          }
+          @case ('pix') {
+            <div class="method-body">
+              <p class="muted">
+                Ao confirmar, geramos um código Pix copia e cola. Abra o app do seu banco, escolha
+                <b>Pix copia e cola</b> e cole o código.
+              </p>
+              @if (pixCode) {
+                <div class="code-box">
+                  <code>{{ pixCode }}</code>
+                  <button type="button" class="btn btn-outline btn-sm" (click)="copiarPix()">
+                    <i class="fa-regular fa-copy"></i> Copiar
+                  </button>
+                </div>
+              }
+            </div>
+          }
+          @case ('boleto') {
+            <div class="method-body">
+              <p class="muted">O boleto vence em 3 dias e o pedido é confirmado após a compensação do pagamento.</p>
+              @if (boletoLinhaDigitavel) {
+                <div class="code-box">
+                  <code>{{ boletoLinhaDigitavel }}</code>
+                </div>
+              }
+            </div>
+          }
+        }
+
+        @if (paymentMessage) {
+          <div class="alert" [class.alert-error]="paymentError" [class.alert-success]="!paymentError" role="status">
+            <i [class]="paymentError ? 'fa-solid fa-circle-exclamation' : 'fa-solid fa-circle-check'"></i>
+            {{ paymentMessage }}
           </div>
+        }
+      </section>
 
-          <div class="card-face card-back">
-            <div class="magnetic-strip" aria-hidden="true"></div>
-            <div class="cvv-box">{{ cardCvv || '***' }}</div>
+      <aside class="panel summary">
+        <h2>Resumo do pedido</h2>
+
+        <ul class="summary-items">
+          @for (item of cartItems; track $index) {
+            <li>
+              <div class="thumb"><img [src]="item.image" [alt]="item.name" /></div>
+              <span class="name">{{ item.name }}</span>
+              <strong>{{ item.price | currency }}</strong>
+            </li>
+          }
+        </ul>
+
+        <dl>
+          <div>
+            <dt>Subtotal</dt>
+            <dd>{{ getTotalPrice() | currency }}</dd>
           </div>
-        </div>
-      </div>
-
-      <form class="card-form" (submit)="$event.preventDefault()">
-        <label for="cardName">Nome no Cartao</label>
-        <input id="cardName" type="text" placeholder="Ex: Victor Fernandes" (input)="updateName($event)" />
-
-        <label for="cardNumber">Numero do Cartao</label>
-        <input
-          id="cardNumber"
-          type="text"
-          maxlength="19"
-          placeholder="1234 5678 9012 3456"
-          (input)="updateNumber($event)"
-        />
-
-        <div class="card-row">
-          <div class="card-field">
-            <label for="cardExpiry">Validade</label>
-            <input id="cardExpiry" type="text" maxlength="5" placeholder="MM/AA" (input)="updateExpiry($event)" />
+          <div>
+            <dt>Frete</dt>
+            <dd class="free">Grátis para a Paraíba</dd>
           </div>
-
-          <div class="card-field">
-            <label for="cardCvv">CVV</label>
-            <input
-              id="cardCvv"
-              type="text"
-              maxlength="3"
-              placeholder="123"
-              (focus)="flipCard(true)"
-              (blur)="flipCard(false)"
-              (input)="updateCvv($event)"
-            />
+          <div class="total">
+            <dt>Total</dt>
+            <dd>{{ getTotalPrice() | currency }}</dd>
           </div>
-        </div>
-      </form>
+        </dl>
+
+        <button
+          type="button"
+          class="btn btn-primary btn-lg btn-block"
+          (click)="finalizarCompra()"
+          [disabled]="!selectedMethod || processing"
+        >
+          @if (processing) {
+            <i class="fa-solid fa-circle-notch fa-spin"></i> Processando...
+          } @else {
+            {{ selectedOption?.action ?? 'Escolha a forma de pagamento' }}
+          }
+        </button>
+      </aside>
     </div>
-
-    <div *ngIf="selectedMethod === 'boleto'" class="boleto-section">
-      <h3>Gerar Boleto Bancario</h3>
-      <p>O boleto sera valido por 3 dias apos a emissao.</p>
-      <button class="boleto-btn" (click)="gerarBoleto()">Gerar Boleto</button>
-      <div class="pix-code" *ngIf="boletoLinhaDigitavel" style="margin-top: 12px;">
-        {{ boletoLinhaDigitavel }}
-      </div>
+  } @else {
+    <div class="empty-state panel">
+      <span class="empty-icon"><i class="fa-solid fa-cart-shopping"></i></span>
+      <h2>Não há itens para pagar</h2>
+      <p>Adicione produtos ao carrinho antes de finalizar a compra.</p>
+      <a routerLink="/" class="btn btn-primary">Ver produtos</a>
     </div>
-
-    <div *ngIf="selectedMethod === 'pix'" class="pix-section">
-      <h3>Pagamento via Pix</h3>
-      <p>Escaneie o QR Code ou copie o codigo abaixo:</p>
-      <div class="pix-code">{{ pixCode || 'Clique em Finalizar Compra para gerar o codigo PIX.' }}</div>
-      <button class="copy-btn" (click)="copiarPix()">Copiar Codigo</button>
-    </div>
-
-    <p *ngIf="paymentMessage" style="margin-top: 12px; color: #9be7ff;">
-      {{ paymentMessage }}
-    </p>
-
-    <button class="finalize-btn" (click)="finalizarCompra()" [disabled]="processing">
-      {{ processing ? 'Processando...' : 'Finalizar Compra' }}
-    </button>
-  </div>
-</section>
+  }
+</div>

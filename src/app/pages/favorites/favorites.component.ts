@@ -1,37 +1,33 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { FavoritesService } from '../services/favorites/favorites.service';
+import { CartService } from '../services/cart/cart.service';
+import { ToastService } from '../services/toast/toast.service';
+import { Product } from '../services/product/product.service';
+import { ProductCardComponent } from '../../components/product-card/product-card.component';
 
 @Component({
   selector: 'app-favorites',
   standalone: true,
-  imports: [CommonModule],
+  imports: [AsyncPipe, RouterLink, ProductCardComponent],
   templateUrl: './favorites.component.html',
   styleUrls: ['./favorites.component.css']
 })
-export class FavoritesComponent implements OnInit {
-  favorites: any[] = [];
+export class FavoritesComponent {
+  private favoritesService = inject(FavoritesService);
+  private cartService = inject(CartService);
+  private toastService = inject(ToastService);
 
-  constructor(private router: Router) {}
+  favorites$ = this.favoritesService.favorites$;
 
-  ngOnInit(): void {
-    this.loadFavorites();
+  remove(product: Product): void {
+    this.favoritesService.remove(product.id);
+    this.toastService.show('Produto removido dos favoritos.', 'info');
   }
 
-  loadFavorites(): void {
-    const storedFavorites = localStorage.getItem('favorites');
-    this.favorites = storedFavorites ? JSON.parse(storedFavorites) : [];
+  addToCart(product: Product): void {
+    this.cartService.addToCart(product);
+    this.toastService.show(`${product.name} foi adicionado ao carrinho.`);
   }
-
-  removeFavorite(productId: number): void {
-    this.favorites = this.favorites.filter(p => p.id !== productId);
-    localStorage.setItem('favorites', JSON.stringify(this.favorites));
-  }
-
-  navigateToProduct(productId: number): void {
-    this.router.navigate(['/product', productId]);
-  }
-  goToProducts(): void {
-  this.router.navigate(['/']);
-}
 }

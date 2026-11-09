@@ -1,190 +1,151 @@
-<header class="navbar">
-  <!-- Linha superior -->
-  <div class="navbar-top">
-    <div class="navbar-left">
-      <img src="../../assets/images/cactechlogo.png" alt="CacTech" class="logo" />
-    </div>
-    <a class="logo-text" href="">
-      <p class="logo-text">Cac<span>Tech</span></p>
-    </a>
+@if (!isFiltered) {
+  <!-- ===== Banner ===== -->
+  <section class="hero container" aria-roledescription="carrossel" aria-label="Destaques">
+    <div class="hero-frame">
+      <div class="hero-track" [style.transform]="'translateX(-' + currentSlide * 100 + '%)'">
+        @for (slide of slides; track slide.department; let i = $index) {
+          <article class="hero-slide" [attr.aria-hidden]="i !== currentSlide">
+            <div class="hero-copy">
+              <span class="eyebrow">{{ slide.eyebrow }}</span>
+              <h1>{{ slide.title }}</h1>
+              <p>{{ slide.text }}</p>
+              <div class="hero-actions">
+                <a
+                  class="btn btn-primary btn-lg"
+                  routerLink="/"
+                  [queryParams]="{ dep: slide.department }"
+                  [attr.tabindex]="i === currentSlide ? 0 : -1"
+                >
+                  {{ slide.cta }} <i class="fa-solid fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
 
-    <div class="navbar-center">
-      <div class="search-wrapper">
-        <input
-          type="text"
-          placeholder="Pesquise seu produto..."
-          class="search-bar"
-        />
-        <button class="search-btn">
-          <i class="fas fa-search"></i>
-        </button>
+            <a
+              class="hero-product"
+              [routerLink]="['/product', slide.product.id]"
+              [attr.tabindex]="i === currentSlide ? 0 : -1"
+            >
+              <div class="hero-product-media">
+                <img [src]="slide.product.image" [alt]="slide.product.name" />
+              </div>
+              <div class="hero-product-info">
+                <span>{{ slide.product.name }}</span>
+                <strong>{{ slide.product.price | currency }}</strong>
+              </div>
+            </a>
+          </article>
+        }
       </div>
-    </div>
 
-    <div class="navbar-right">
-      <a *ngIf="!isLoggedIn" class="account" (click)="navigateToLogin()" title="Minha Conta">
-        <i class="fas fa-user-circle"></i>
-        <span>Entrar</span>
-      </a>
-      <div *ngIf="isLoggedIn" class="user-menu">
-        <button type="button" class="user-menu-trigger" (click)="toggleUserMenu()" title="Minha conta">
-          <img *ngIf="userAvatar" [src]="userAvatar" alt="Avatar" class="user-avatar" />
-          <i *ngIf="!userAvatar" class="fas fa-user-circle"></i>
-          <span>{{ userDisplayName }}</span>
-          <i class="fas fa-chevron-down"></i>
-        </button>
-        <div *ngIf="dropdownOpen" class="user-dropdown">
-          <button type="button" (click)="navigateToProfile()">Meu Perfil</button>
-          <button type="button" (click)="logout()">Sair</button>
-        </div>
+      <div class="hero-dots">
+        @for (slide of slides; track slide.department; let i = $index) {
+          <button
+            type="button"
+            [class.active]="i === currentSlide"
+            [attr.aria-label]="'Ir para o destaque ' + (i + 1)"
+            (click)="goToSlide(i)"
+          ></button>
+        }
       </div>
-
-      <a (click)="navigateToFavorites()" class="wishlist" title="Favoritos">
-        <i class="fas fa-heart"></i>
-      </a>
-
-      <a (click)="goToCart()" class="cart" title="Carrinho">
-        <i class="fas fa-shopping-cart"></i>
-        <span class="cart-count"> {{ cartCount }}</span>
-      </a>
-    </div>
-  </div>
-
-  <!-- Linha inferior -->
-  <nav class="navbar-bottom">
-    <a href="#">PROMOÇÕES</a>
-    <a href="#">PC GAMER</a>
-    <a href="#">KIT UPGRADE</a>
-    <a href="#">HARDWARE</a>
-    <a href="#">MONITORES</a>
-    <a href="#">ATENDIMENTO</a>
-  </nav>
-</header>
-
-<!-- ===== CONTEÚDO PRINCIPAL ===== -->
-<main class="main-wrapper">
-
-  <!-- SLIDER PRINCIPAL -->
-<section class="slider hero-slider">
-    <input type="radio" name="hero" id="hero-1" checked>
-    <input type="radio" name="hero" id="hero-2">
-    <input type="radio" name="hero" id="hero-3">
-
-    <div class="hero-track">
-      <div class="hero-slide">
-        <img src="../../../assets/images/sliderbemvindo.jpg" alt="Banner hardware 1" />
-      </div>
-      <div class="hero-slide">
-        <img src="../../../assets/images/slidermelhorloja.jpg" alt="Banner hardware 2" />
-      </div>
-      <div class="hero-slide">
-        <img src="../../../assets/images/daparaiba.png" alt="Banner hardware 3" />
-      </div>
-    </div>
-
-    <div class="hero-dots">
-      <label for="hero-1" class="dot"></label>
-      <label for="hero-2" class="dot"></label>
-      <label for="hero-3" class="dot"></label>
     </div>
   </section>
 
+  <!-- ===== Benefícios ===== -->
+  <section class="container">
+    <ul class="benefits">
+      <li>
+        <i class="fa-solid fa-truck-fast"></i>
+        <div><strong>Frete grátis</strong><span>Para toda a Paraíba</span></div>
+      </li>
+      <li>
+        <i class="fa-solid fa-qrcode"></i>
+        <div><strong>10% OFF no Pix</strong><span>Desconto à vista</span></div>
+      </li>
+      <li>
+        <i class="fa-regular fa-credit-card"></i>
+        <div><strong>Até 12x sem juros</strong><span>No cartão de crédito</span></div>
+      </li>
+      <li>
+        <i class="fa-solid fa-location-dot"></i>
+        <div><strong>Loja paraibana</strong><span>Atendimento em João Pessoa</span></div>
+      </li>
+    </ul>
+  </section>
 
-<!-- NOVA SEÇÃO: PRODUTOS EM DESTAQUE -->
-<section class="featured-products">
-  <h2><i class="fas fa-bolt"></i> Produtos</h2>
-
-  <div class="product-grid">
-    <div class="product-card" *ngFor="let product of Products">
-      <div class="product-image">
-        <img [src]="product.image" [alt]="product.name">
-
-        <!-- ÍCONE DE FAVORITAR (stopPropagation evita conflitos se o card tiver click) -->
-        <button
-          class="favorite-btn"
-          [class.active]="isFavorite(product.id)"
-          (click)="toggleFavorite(product); $event.stopPropagation()">
-          <i class="fas" [ngClass]="isFavorite(product.id) ? 'fa-heart' : 'fa-heart-broken'"></i>
-        </button>
-      </div>
-
-      <div class="product-info" (click)="openProduct(product.id)">
-        <h3>{{ product.name }}</h3>
-        <p class="price">R$ {{ product.price | number:'1.2-2' }}</p>
-        <button class="buy-btn" (click)="viewProduct(product.id); $event.stopPropagation()">Comprar</button>
+  <!-- ===== Departamentos ===== -->
+  <section class="container section">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">Navegue por</span>
+        <h2>Departamentos</h2>
       </div>
     </div>
+
+    <div class="dept-grid">
+      @for (dep of departments; track dep.slug) {
+        <a class="dept-card" routerLink="/" [queryParams]="{ dep: dep.slug }">
+          <span class="dept-icon"><i [class]="dep.icon"></i></span>
+          <strong>{{ dep.label }}</strong>
+          <span class="muted">{{ dep.description }}</span>
+          <span class="dept-count">{{ countIn(dep.slug) }} produtos <i class="fa-solid fa-arrow-right"></i></span>
+        </a>
+      }
+    </div>
+  </section>
+}
+
+<!-- ===== Vitrine ===== -->
+<section class="container section" id="produtos" [class.listing-page]="isFiltered">
+  @if (isFiltered) {
+    <nav class="breadcrumb" aria-label="Você está em">
+      <a routerLink="/">Início</a>
+      <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      <span class="current">{{ query ? 'Busca' : department?.label }}</span>
+    </nav>
+  }
+
+  <div class="section-head">
+    <div>
+      @if (!isFiltered) {
+        <span class="eyebrow">Catálogo</span>
+      }
+      <h2>{{ listingTitle }}</h2>
+      <p class="muted">
+        {{ products.length }} {{ products.length === 1 ? 'produto encontrado' : 'produtos encontrados' }}
+        @if (isFiltered) {
+          · <a routerLink="/" class="link">Limpar filtros</a>
+        }
+      </p>
+    </div>
+
+    <label class="sort">
+      <span class="label">Ordenar por</span>
+      <select class="select" [value]="sort" (change)="onSortChange($any($event.target).value)">
+        <option value="relevance">Relevância</option>
+        <option value="price-asc">Menor preço</option>
+        <option value="price-desc">Maior preço</option>
+      </select>
+    </label>
   </div>
+
+  @if (products.length) {
+    <div class="product-grid">
+      @for (product of products; track product.id) {
+        <app-product-card
+          [product]="product"
+          [favorite]="favoriteIds.has(product.id)"
+          (favoriteToggle)="toggleFavorite($event)"
+          (addToCart)="addToCart($event)"
+        />
+      }
+    </div>
+  } @else {
+    <div class="empty-state panel">
+      <span class="empty-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+      <h2>Nenhum produto encontrado</h2>
+      <p>Confira a grafia ou tente termos mais gerais, como "monitor", "RTX" ou "Ryzen".</p>
+      <a routerLink="/" class="btn btn-primary">Ver todos os produtos</a>
+    </div>
+  }
 </section>
-
-
-<!-- ===== RODAPÉ ===== -->
-<footer class="footer">
-  <div class="footer-container">
-
-    <!-- Coluna 1: Departamentos -->
-    <div class="footer-column">
-      <h3>Departamentos</h3>
-      <ul>
-        <li><a href="#">Hardware</a></li>
-        <li><a href="#">Computadores</a></li>
-        <li><a href="#">Monitores</a></li>
-        <li><a href="#">Kit Upgrade</a></li>
-        <li><a href="#">PC Gamer</a></li>
-      </ul>
-    </div>
-
-    <!-- Coluna 2: Institucional -->
-    <div class="footer-column">
-      <h3>Institucional</h3>
-      <ul>
-        <li><a href="#">Quem somos</a></li>
-        <li><a href="#">Fale conosco</a></li>
-        <li><a href="#">Política de Privacidade</a></li>
-      </ul>
-    </div>
-
-    <!-- Coluna 3: Ajuda -->
-    <div class="footer-column">
-      <h3>Ajuda</h3>
-      <ul>
-        <li><a href="#">Entrega</a></li>
-        <li><a href="#">Garantia</a></li>
-        <li><a href="#">Formas de pagamento</a></li>
-        <li><a href="#">Como comprar</a></li>
-        <li><a href="#">Termos de uso</a></li>
-      </ul>
-    </div>
-
-    <!-- Coluna 4: Newsletter / Pagamento -->
-    <div class="footer-column">
-      <h3>Receba ofertas exclusivas</h3>
-      <div class="newsletter">
-        <input type="email" placeholder="Seu e-mail">
-        <button><i class="fas fa-arrow-right"></i></button>
-      </div>
-
-      <div class="social-icons">
-        <a target="_blank" href="https://www.instagram.com/cactechjp/"><i class="fab fa-instagram"></i></a>
-        <a href="#"><i class="fab fa-x-twitter"></i></a>
-        <a href="#"><i class="fab fa-youtube"></i></a>
-      </div>
-
-      <div class="payment-icons">
-        <img src="assets/images/visa.png" alt="Visa">
-        <img src="assets/images/mastercard.png" alt="Mastercard">
-        <img src="assets/images/boleto.png" alt="Boleto">
-        <img src="assets/images/pix.png" alt="Pix">
-      </div>
-    </div>
-  </div>
-
-  <div class="footer-bottom">
-    <p>
-      © 2025 <span>CacTech Informática</span> — Todos os direitos reservados.
-    </p>
-    <p class="cnpj">CNPJ: 12.345.678/0001-90 | João Pessoa - PB</p>
-  </div>
-</footer>
-
-</main>

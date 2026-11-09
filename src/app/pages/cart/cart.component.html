@@ -1,61 +1,77 @@
-<div class="cart-page">
-  <div class="cart-container">
-    <!-- Título -->
-    <h1 class="cart-title">
-      🛒 Meu Carrinho
-    </h1>
-
-    <!-- Lista de produtos -->
-    <div class="cart-items">
-      <div class="cart-item" *ngFor="let item of cartItems">
-        <img [src]="item.image" [alt]="item.name" />
-
-        <div class="cart-item-info">
-          <h3>{{ item.name }}</h3>
-          <p>{{ item.description }}</p>
-        </div>
-
-        <div class="cart-item-price">
-          R$ {{ item.price | number: '1.2-2' }}
-        </div>
-
-        <button class="remove-btn" (click)="removeFromCart(item)">
-          Remover
-        </button>
-      </div>
+<div class="container page">
+  <header class="page-header">
+    <div>
+      <h1>Carrinho</h1>
+      <p>{{ cartItems.length }} {{ cartItems.length === 1 ? 'item' : 'itens' }}</p>
     </div>
+  </header>
 
-    <!-- Resumo do pedido -->
-    <div class="cart-summary" *ngIf="cartItems.length > 0">
-      <h2>Resumo do Pedido</h2>
+  @if (cartItems.length) {
+    <div class="cart-layout">
+      <section class="panel items">
+        @for (item of cartItems; track $index; let i = $index) {
+          <article class="item">
+            <div class="thumb">
+              <img [src]="item.image" [alt]="item.name" />
+            </div>
 
-      <div class="summary-details">
-        <span>Total de Itens:</span>
-        <span>{{ getTotalItems() }}</span>
-      </div>
+            <div class="info">
+              @if (item.category) {
+                <span class="category">{{ item.category }}</span>
+              }
+              @if (item.id != null) {
+                <a [routerLink]="['/product', item.id]" class="name">{{ item.name }}</a>
+              } @else {
+                <span class="name">{{ item.name }}</span>
+              }
+              <button type="button" class="remove" (click)="removeFromCart(i)">
+                <i class="fa-regular fa-trash-can"></i> Remover
+              </button>
+            </div>
 
-      <div class="summary-details">
-        <span>Valor Total:</span>
-        <span>R$ {{ getTotalPrice() | number: '1.2-2' }}</span>
-      </div>
+            <strong class="price">{{ item.price | currency }}</strong>
+          </article>
+        }
 
-      <div class="cart-actions">
-        <button class="cart-btn clear" (click)="clearCart()">
-          Limpar Carrinho
+        <footer class="items-footer">
+          <a routerLink="/" class="btn btn-ghost btn-sm"><i class="fa-solid fa-arrow-left"></i> Continuar comprando</a>
+          <button type="button" class="btn btn-ghost btn-sm" (click)="clearCart()">Esvaziar carrinho</button>
+        </footer>
+      </section>
+
+      <aside class="panel summary">
+        <h2>Resumo do pedido</h2>
+
+        <dl>
+          <div>
+            <dt>Subtotal ({{ cartItems.length }} {{ cartItems.length === 1 ? 'item' : 'itens' }})</dt>
+            <dd>{{ total | currency }}</dd>
+          </div>
+          <div>
+            <dt>Frete</dt>
+            <dd class="free">Grátis para a Paraíba</dd>
+          </div>
+          <div class="total">
+            <dt>Total</dt>
+            <dd>{{ total | currency }}</dd>
+          </div>
+        </dl>
+
+        <p class="installments">em até 12x de {{ total / 12 | currency }} sem juros</p>
+
+        <button type="button" class="btn btn-primary btn-lg btn-block" (click)="finalizarCompra()">
+          Finalizar compra
         </button>
-        <button class="cart-btn checkout" (click)="finalizarCompra()">
-          Finalizar Compra
-        </button>
-      </div>
-    </div>
 
-    <!-- Caso o carrinho esteja vazio -->
-    <div *ngIf="cartItems.length === 0" class="cart-empty">
-      <h3>🛍️ Seu carrinho está vazio</h3>
-      <p>Adicione produtos e volte aqui para continuar!</p>
-      <button class="cart-btn checkout" (click)="voltar()">
-        Ver Produtos
-      </button>
+        <p class="secure"><i class="fa-solid fa-lock"></i> Pagamento por cartão, boleto ou Pix</p>
+      </aside>
     </div>
-  </div>
+  } @else {
+    <div class="empty-state panel">
+      <span class="empty-icon"><i class="fa-solid fa-cart-shopping"></i></span>
+      <h2>Seu carrinho está vazio</h2>
+      <p>Explore o catálogo e adicione os produtos que você quer levar.</p>
+      <a routerLink="/" class="btn btn-primary">Ver produtos</a>
+    </div>
+  }
 </div>

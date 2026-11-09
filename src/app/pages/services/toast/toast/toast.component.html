@@ -1,4 +1,11 @@
-<div *ngIf="message" class="toast">
-  <i class="fas fa-check-circle"></i>
-  {{ message }}
+<div class="toast-region" aria-live="polite">
+  @if (message$ | async; as message) {
+    <div class="toast" [class.toast-error]="message.type === 'error'" role="status">
+      <i [class]="icons[message.type]" aria-hidden="true"></i>
+      <p>{{ message.text }}</p>
+      <button type="button" class="close" (click)="close()" aria-label="Fechar aviso">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  }
 </div>

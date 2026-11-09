@@ -1,23 +1,33 @@
-<main><div class="favorites-container" *ngIf="favorites.length > 0; else emptyState">
-  <h2>Meus Favoritos 💜</h2>
-  <div class="favorites-grid">
-    <div class="favorite-card" *ngFor="let product of favorites">
-      <img [src]="product.image" [alt]="product.name" />
-      <h3>{{ product.name }}</h3>
-      <p >{{ product.price | currency: 'BRL' }}</p>
-
-      <div class="actions">
-        <button (click)="navigateToProduct(product.id)">Ver produto</button>
-        <button class="remove" (click)="removeFavorite(product.id)">Remover</button>
+<div class="container page">
+  @if (favorites$ | async; as favorites) {
+    <header class="page-header">
+      <div>
+        <h1>Favoritos</h1>
+        <p>
+          {{ favorites.length }}
+          {{ favorites.length === 1 ? 'produto salvo' : 'produtos salvos' }}
+        </p>
       </div>
-    </div>
-  </div>
-</div>
+    </header>
 
-<ng-template #emptyState>
-  <div class="empty">
-    <p>Você ainda não tem favoritos 💔</p>
-    <button (click)="goToProducts()">Explorar produtos</button>
-  </div>
-</ng-template>
-</main>
+    @if (favorites.length) {
+      <div class="product-grid">
+        @for (product of favorites; track product.id) {
+          <app-product-card
+            [product]="product"
+            [favorite]="true"
+            (favoriteToggle)="remove($event)"
+            (addToCart)="addToCart($event)"
+          />
+        }
+      </div>
+    } @else {
+      <div class="empty-state panel">
+        <span class="empty-icon"><i class="fa-regular fa-heart"></i></span>
+        <h2>Nenhum favorito ainda</h2>
+        <p>Toque no coração de um produto para salvá-lo aqui e encontrá-lo depois.</p>
+        <a routerLink="/" class="btn btn-primary">Explorar produtos</a>
+      </div>
+    }
+  }
+</div>
