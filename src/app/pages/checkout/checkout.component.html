@@ -168,11 +168,16 @@
         <h2>Resumo do pedido</h2>
 
         <ul class="summary-items">
-          @for (item of cartItems; track $index) {
+          @for (item of cartItems; track item.id) {
             <li>
               <div class="thumb"><img [src]="item.image" [alt]="item.name" /></div>
-              <span class="name">{{ item.name }}</span>
-              <strong>{{ item.price | currency }}</strong>
+              <span class="name">
+                @if (item.quantity > 1) {
+                  <b class="qty-tag">{{ item.quantity }}×</b>
+                }
+                {{ item.name }}
+              </span>
+              <strong>{{ item.price * item.quantity | currency }}</strong>
             </li>
           }
         </ul>

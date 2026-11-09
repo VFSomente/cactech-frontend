@@ -2,14 +2,14 @@
   <header class="page-header">
     <div>
       <h1>Carrinho</h1>
-      <p>{{ cartItems.length }} {{ cartItems.length === 1 ? 'item' : 'itens' }}</p>
+      <p>{{ unitCount }} {{ unitCount === 1 ? 'item' : 'itens' }}</p>
     </div>
   </header>
 
   @if (cartItems.length) {
     <div class="cart-layout">
       <section class="panel items">
-        @for (item of cartItems; track $index; let i = $index) {
+        @for (item of cartItems; track item.id) {
           <article class="item">
             <div class="thumb">
               <img [src]="item.image" [alt]="item.name" />
@@ -19,17 +19,38 @@
               @if (item.category) {
                 <span class="category">{{ item.category }}</span>
               }
-              @if (item.id != null) {
-                <a [routerLink]="['/product', item.id]" class="name">{{ item.name }}</a>
-              } @else {
-                <span class="name">{{ item.name }}</span>
-              }
-              <button type="button" class="remove" (click)="removeFromCart(i)">
+              <a [routerLink]="['/product', item.id]" class="name">{{ item.name }}</a>
+              <button type="button" class="remove" (click)="remove(item)">
                 <i class="fa-regular fa-trash-can"></i> Remover
               </button>
             </div>
 
-            <strong class="price">{{ item.price | currency }}</strong>
+            <div class="side">
+              <strong class="price">{{ item.price * item.quantity | currency }}</strong>
+              @if (item.quantity > 1) {
+                <span class="unit">{{ item.price | currency }} cada</span>
+              }
+
+              <div class="qty" role="group" [attr.aria-label]="'Quantidade de ' + item.name">
+                <button
+                  type="button"
+                  (click)="decrement(item)"
+                  [disabled]="item.quantity <= 1"
+                  aria-label="Diminuir quantidade"
+                >
+                  <i class="fa-solid fa-minus"></i>
+                </button>
+                <span aria-live="polite">{{ item.quantity }}</span>
+                <button
+                  type="button"
+                  (click)="increment(item)"
+                  [disabled]="item.quantity >= maxQuantity"
+                  aria-label="Aumentar quantidade"
+                >
+                  <i class="fa-solid fa-plus"></i>
+                </button>
+              </div>
+            </div>
           </article>
         }
 
@@ -44,7 +65,7 @@
 
         <dl>
           <div>
-            <dt>Subtotal ({{ cartItems.length }} {{ cartItems.length === 1 ? 'item' : 'itens' }})</dt>
+            <dt>Subtotal ({{ unitCount }} {{ unitCount === 1 ? 'item' : 'itens' }})</dt>
             <dd>{{ total | currency }}</dd>
           </div>
           <div>

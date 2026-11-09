@@ -285,6 +285,10 @@ h2 {
   object-fit: contain;
 }
 
+.qty-tag {
+  color: var(--accent);
+}
+
 .name {
   color: var(--text-muted);
   display: -webkit-box;

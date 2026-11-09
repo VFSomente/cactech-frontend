@@ -2,8 +2,7 @@ import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
-import { CartService } from '../services/cart/cart.service';
-import { Product } from '../services/product/product.service';
+import { CartItem, CartService, MAX_QUANTITY } from '../services/cart/cart.service';
 
 @Component({
   selector: 'app-cart',
@@ -17,18 +16,30 @@ export class CartComponent implements OnInit {
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
 
-  cartItems: Product[] = [];
+  readonly maxQuantity = MAX_QUANTITY;
+
+  cartItems: CartItem[] = [];
   total = 0;
+  unitCount = 0;
 
   ngOnInit(): void {
     this.cartService.cartItems$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((items) => {
       this.cartItems = items;
-      this.total = items.reduce((sum, item) => sum + item.price, 0);
+      this.total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      this.unitCount = items.reduce((sum, item) => sum + item.quantity, 0);
     });
   }
 
-  removeFromCart(index: number): void {
-    this.cartService.removeAt(index);
+  increment(item: CartItem): void {
+    this.cartService.increment(item.id);
+  }
+
+  decrement(item: CartItem): void {
+    this.cartService.decrement(item.id);
+  }
+
+  remove(item: CartItem): void {
+    this.cartService.remove(item.id);
   }
 
   clearCart(): void {

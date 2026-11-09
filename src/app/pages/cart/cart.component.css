@@ -68,9 +68,58 @@ a.name:hover {
   color: var(--danger);
 }
 
+.side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
 .price {
   font-size: 1.1rem;
   white-space: nowrap;
+}
+
+.unit {
+  font-size: 0.78rem;
+  color: var(--text-subtle);
+}
+
+/* Botões − / + */
+.qty {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.qty button {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  font-size: 0.8rem;
+  color: var(--text);
+  transition: background 0.2s, color 0.2s;
+}
+
+.qty button:hover:not(:disabled) {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.qty button:disabled {
+  color: var(--text-subtle);
+  cursor: not-allowed;
+}
+
+.qty span {
+  min-width: 36px;
+  text-align: center;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
 .items-footer {
@@ -174,7 +223,15 @@ dt {
     height: 72px;
   }
 
-  .price {
+  .side {
     grid-column: 2;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .qty {
+    margin-top: 0;
   }
 }

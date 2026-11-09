@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { CartService } from '../services/cart/cart.service';
+import { CartItem, CartService } from '../services/cart/cart.service';
 import { MetodoPagamento, PedidoService } from '../services/pedido/pedido.service';
 import { ToastService } from '../services/toast/toast.service';
-import { Product } from '../services/product/product.service';
 
 interface PaymentOption {
   id: MetodoPagamento;
@@ -34,7 +33,7 @@ export class CheckoutComponent {
   boletoLinhaDigitavel = '';
   paymentMessage = '';
   paymentError = false;
-  cartItems: Product[] = [];
+  cartItems: CartItem[] = [];
   processing = false;
   /** Pedido concluído (pagamento registrado). */
   orderId?: number;
@@ -168,7 +167,7 @@ export class CheckoutComponent {
     const itens = this.cartItems.map((item) => ({
       produtoId: item.id,
       nomeProduto: item.name,
-      quantidade: 1,
+      quantidade: item.quantity,
       precoUnitario: item.price
     }));
 
@@ -208,7 +207,7 @@ export class CheckoutComponent {
   }
 
   getTotalPrice(): number {
-    return this.cartItems.reduce((sum, item) => sum + item.price, 0);
+    return this.cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   }
 
   private fail(message: string): void {
